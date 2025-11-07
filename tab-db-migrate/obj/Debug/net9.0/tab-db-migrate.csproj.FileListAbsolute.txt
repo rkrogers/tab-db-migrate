@@ -1,0 +1,15 @@
+/Users/ryanrogers/Documents/Repos/tab-db-migrate/tab-db-migrate/tab-db-migrate/bin/Debug/net9.0/tab-db-migrate
+/Users/ryanrogers/Documents/Repos/tab-db-migrate/tab-db-migrate/tab-db-migrate/bin/Debug/net9.0/tab-db-migrate.deps.json
+/Users/ryanrogers/Documents/Repos/tab-db-migrate/tab-db-migrate/tab-db-migrate/bin/Debug/net9.0/tab-db-migrate.runtimeconfig.json
+/Users/ryanrogers/Documents/Repos/tab-db-migrate/tab-db-migrate/tab-db-migrate/bin/Debug/net9.0/tab-db-migrate.dll
+/Users/ryanrogers/Documents/Repos/tab-db-migrate/tab-db-migrate/tab-db-migrate/bin/Debug/net9.0/tab-db-migrate.pdb
+/Users/ryanrogers/Documents/Repos/tab-db-migrate/tab-db-migrate/tab-db-migrate/obj/Debug/net9.0/tab-db-migrate.GeneratedMSBuildEditorConfig.editorconfig
+/Users/ryanrogers/Documents/Repos/tab-db-migrate/tab-db-migrate/tab-db-migrate/obj/Debug/net9.0/tab-db-migrate.AssemblyInfoInputs.cache
+/Users/ryanrogers/Documents/Repos/tab-db-migrate/tab-db-migrate/tab-db-migrate/obj/Debug/net9.0/tab-db-migrate.AssemblyInfo.cs
+/Users/ryanrogers/Documents/Repos/tab-db-migrate/tab-db-migrate/tab-db-migrate/obj/Debug/net9.0/tab-db-migrate.csproj.CoreCompileInputs.cache
+/Users/ryanrogers/Documents/Repos/tab-db-migrate/tab-db-migrate/tab-db-migrate/obj/Debug/net9.0/tab-db-migrate.sourcelink.json
+/Users/ryanrogers/Documents/Repos/tab-db-migrate/tab-db-migrate/tab-db-migrate/obj/Debug/net9.0/tab-db-migrate.dll
+/Users/ryanrogers/Documents/Repos/tab-db-migrate/tab-db-migrate/tab-db-migrate/obj/Debug/net9.0/refint/tab-db-migrate.dll
+/Users/ryanrogers/Documents/Repos/tab-db-migrate/tab-db-migrate/tab-db-migrate/obj/Debug/net9.0/tab-db-migrate.pdb
+/Users/ryanrogers/Documents/Repos/tab-db-migrate/tab-db-migrate/tab-db-migrate/obj/Debug/net9.0/tab-db-migrate.genruntimeconfig.cache
+/Users/ryanrogers/Documents/Repos/tab-db-migrate/tab-db-migrate/tab-db-migrate/obj/Debug/net9.0/ref/tab-db-migrate.dll

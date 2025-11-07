@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/ryanrogers/Documents/repo/tab-db-migrate/tab-db-migrate/tab-db-migrate.csproj",
+      "projectUniqueName": "/Users/ryanrogers/Documents/Repos/tab-db-migrate/tab-db-migrate/tab-db-migrate/tab-db-migrate.csproj",
       "projectName": "tab-db-migrate",
-      "projectPath": "/Users/ryanrogers/Documents/repo/tab-db-migrate/tab-db-migrate/tab-db-migrate.csproj",
+      "projectPath": "/Users/ryanrogers/Documents/Repos/tab-db-migrate/tab-db-migrate/tab-db-migrate/tab-db-migrate.csproj",
       "packagesPath": "/Users/ryanrogers/.nuget/packages/",
-      "outputPath": "/Users/ryanrogers/Documents/repo/tab-db-migrate/tab-db-migrate/obj/",
+      "outputPath": "/Users/ryanrogers/Documents/Repos/tab-db-migrate/tab-db-migrate/tab-db-migrate/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/ryanrogers/.nuget/NuGet/NuGet.Config"
@@ -65,7 +65,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.306/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.300/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
