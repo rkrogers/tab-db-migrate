@@ -1,8 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "gOgVC/OAqEg=",
+  "dgSpecHash": "7G3Fav4t9xU=",
   "success": true,
   "projectFilePath": "/Users/ryanrogers/Documents/Repos/tab-db-migrate/tab-db-migrate/tab-db-migrate/tab-db-migrate.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "/Users/ryanrogers/.nuget/packages/microsoft.net.illink.tasks/9.0.5/microsoft.net.illink.tasks.9.0.5.nupkg.sha512",
+    "/Users/ryanrogers/.nuget/packages/microsoft.netcore.app.runtime.linux-x64/9.0.5/microsoft.netcore.app.runtime.linux-x64.9.0.5.nupkg.sha512",
+    "/Users/ryanrogers/.nuget/packages/microsoft.aspnetcore.app.runtime.linux-x64/9.0.5/microsoft.aspnetcore.app.runtime.linux-x64.9.0.5.nupkg.sha512",
+    "/Users/ryanrogers/.nuget/packages/microsoft.netcore.app.host.linux-x64/9.0.5/microsoft.netcore.app.host.linux-x64.9.0.5.nupkg.sha512"
+  ],
   "logs": []
 }
