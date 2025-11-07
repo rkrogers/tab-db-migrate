@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -71,17 +72,6 @@ public class TableauDataSourceLister
 
             // Store in global variable
             GlobalInventory = inventory;
-
-            // Output to console as JSON
-            var jsonOutput = JsonSerializer.Serialize(inventory, new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-            });
-
-            Console.WriteLine("\n=== Data Source Inventory (JSON) ===");
-            Console.WriteLine(jsonOutput);
-            Console.WriteLine("====================================\n");
 
             return inventory;
         }
@@ -161,7 +151,104 @@ public class TableauDataSourceLister
 
         return connections;
     }
+
+    /// <summary>
+    /// Updates a data source connection with new credentials and server information
+    /// </summary>
+    /// <param name="authToken">The authentication token</param>
+    /// <param name="siteId">The site ID</param>
+    /// <param name="dataSourceId">The data source ID</param>
+    /// <param name="connectionId">The connection ID to update</param>
+    /// <param name="serverAddress">New server address</param>
+    /// <param name="serverPort">New server port</param>
+    /// <param name="userName">New username</param>
+    /// <param name="password">New password</param>
+    /// <returns>True if update successful, false otherwise</returns>
+    public async Task<bool> UpdateDataSourceConnectionAsync(
+        string authToken, 
+        string siteId, 
+        string dataSourceId, 
+        string connectionId,
+        string serverAddress,
+        string serverPort,
+        string userName,
+        string password)
+    {
+        var url = $"{_serverUrl}/api/{_apiVersion}/sites/{siteId}/datasources/{dataSourceId}/connections/{connectionId}";
+
+        var updateRequest = new UpdateConnectionRequest
+        {
+            Connection = new UpdateConnectionData
+            {
+                ServerAddress = serverAddress,
+                ServerPort = serverPort,
+                UserName = userName,
+                Password = password
+            }
+        };
+
+        var jsonContent = JsonSerializer.Serialize(updateRequest, new JsonSerializerOptions
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        });
+
+        var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+        var request = new HttpRequestMessage(HttpMethod.Put, url)
+        {
+            Content = content
+        };
+        request.Headers.Add("X-Tableau-Auth", authToken);
+        request.Headers.Add("Accept", "application/json");
+
+        try
+        {
+            var response = await _httpClient.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"✗ Failed to update connection. Status: {response.StatusCode}");
+                Console.WriteLine($"Error: {errorContent}");
+                return false;
+            }
+
+            Console.WriteLine("✓ Connection updated successfully!");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"✗ Error updating connection: {ex.Message}");
+            return false;
+        }
+    }
 }
+
+#region Update Request Models
+
+internal class UpdateConnectionRequest
+{
+    [JsonPropertyName("connection")]
+    public UpdateConnectionData Connection { get; set; } = new();
+}
+
+internal class UpdateConnectionData
+{
+    [JsonPropertyName("serverAddress")]
+    public string ServerAddress { get; set; } = string.Empty;
+
+    [JsonPropertyName("serverPort")]
+    public string ServerPort { get; set; } = string.Empty;
+
+    [JsonPropertyName("userName")]
+    public string UserName { get; set; } = string.Empty;
+
+    [JsonPropertyName("password")]
+    public string Password { get; set; } = string.Empty;
+}
+
+#endregion
 
 #region API Response Models
 
