@@ -1,5 +1,5 @@
 ﻿// Tableau Data Source Connection Manager
-// Authenticates with PAT and allows interactive updating of data source connections
+// Authenticates with PAT and allows batch updating of data source connections
 
 using tab_db_migrate;
 
@@ -51,46 +51,60 @@ try
     var lister = new TableauDataSourceLister(serverUrl, apiVersion);
     var inventory = await lister.EnumerateDataSourcesAsync(authResponse.Token, authResponse.SiteId);
 
-    // Step 3: Display all connections with their details
-    Console.WriteLine("\n" + new string('=', 80));
-    Console.WriteLine("DATA SOURCE CONNECTIONS");
-    Console.WriteLine(new string('=', 80));
-
-    var allConnections = new List<(string DataSourceId, string DataSourceName, ConnectionInfo Connection)>();
-    int displayIndex = 1;
+    // Step 3: Group connections by unique (serverAddress, serverPort, userName) combinations
+    var uniqueConnections = new Dictionary<string, UniqueConnectionGroup>();
+    int groupId = 1;
 
     foreach (var ds in inventory.DataSources)
     {
-        if (ds.Connections.Count > 0)
+        foreach (var conn in ds.Connections)
         {
-            Console.WriteLine($"\nData Source: {ds.Name} (Type: {ds.Type})");
-            Console.WriteLine(new string('-', 80));
-
-            foreach (var conn in ds.Connections)
+            // Create a unique key based on server, port, and username
+            string key = $"{conn.ServerAddress}|{conn.ServerPort}|{conn.UserName}";
+            
+            if (!uniqueConnections.ContainsKey(key))
             {
-                Console.WriteLine($"  [{displayIndex}] Connection ID: {conn.Id}");
-                Console.WriteLine($"      Type: {conn.Type}");
-                Console.WriteLine($"      Server Address: {conn.ServerAddress}");
-                Console.WriteLine($"      Server Port: {conn.ServerPort}");
-                Console.WriteLine($"      Username: {conn.UserName}");
-                Console.WriteLine();
-
-                allConnections.Add((ds.Id, ds.Name, conn));
-                displayIndex++;
+                uniqueConnections[key] = new UniqueConnectionGroup
+                {
+                    Id = groupId++,
+                    ServerAddress = conn.ServerAddress,
+                    ServerPort = conn.ServerPort,
+                    UserName = conn.UserName,
+                    Connections = new List<(string DataSourceId, string DataSourceName, string ConnectionId)>()
+                };
             }
+
+            uniqueConnections[key].Connections.Add((ds.Id, ds.Name, conn.Id));
         }
     }
 
-    if (allConnections.Count == 0)
+    if (uniqueConnections.Count == 0)
     {
         Console.WriteLine("\nNo connections found.");
         await authenticator.SignOutAsync(authResponse.Token, authResponse.SiteId);
         return;
     }
 
-    // Step 4: Ask user which connection to modify
+    // Step 4: Display unique connections
+    Console.WriteLine("\n" + new string('=', 80));
+    Console.WriteLine("UNIQUE DATA SOURCE CONNECTIONS");
     Console.WriteLine(new string('=', 80));
-    Console.Write($"\nEnter the number of the connection you want to modify [1-{allConnections.Count}] (or 'q' to quit): ");
+    Console.WriteLine();
+
+    foreach (var group in uniqueConnections.Values.OrderBy(g => g.Id))
+    {
+        Console.WriteLine($"[{group.Id}] Server: {group.ServerAddress}, Port: {group.ServerPort}, Username: {group.UserName}");
+        Console.WriteLine($"    Used by {group.Connections.Count} connection(s):");
+        foreach (var (dsId, dsName, connId) in group.Connections)
+        {
+            Console.WriteLine($"      - {dsName}");
+        }
+        Console.WriteLine();
+    }
+
+    // Step 5: Ask user which connection group to modify
+    Console.WriteLine(new string('=', 80));
+    Console.Write($"\nEnter the ID of the connection you want to modify [1-{uniqueConnections.Count}] (or 'q' to quit): ");
     string? selection = Console.ReadLine();
 
     if (string.IsNullOrWhiteSpace(selection) || selection.ToLower() == "q")
@@ -100,59 +114,81 @@ try
         return;
     }
 
-    if (!int.TryParse(selection, out int selectedIndex) || selectedIndex < 1 || selectedIndex > allConnections.Count)
+    if (!int.TryParse(selection, out int selectedId))
     {
         Console.WriteLine("\nInvalid selection.");
         await authenticator.SignOutAsync(authResponse.Token, authResponse.SiteId);
         return;
     }
 
-    var selectedConnection = allConnections[selectedIndex - 1];
-    Console.WriteLine($"\nSelected: {selectedConnection.DataSourceName} - Connection {selectedConnection.Connection.Id}");
+    var selectedGroup = uniqueConnections.Values.FirstOrDefault(g => g.Id == selectedId);
+    if (selectedGroup == null)
+    {
+        Console.WriteLine("\nInvalid ID.");
+        await authenticator.SignOutAsync(authResponse.Token, authResponse.SiteId);
+        return;
+    }
 
-    // Step 5: Prompt for new connection details
+    Console.WriteLine($"\nSelected connection group #{selectedGroup.Id}");
+    Console.WriteLine($"Current: Server={selectedGroup.ServerAddress}, Port={selectedGroup.ServerPort}, Username={selectedGroup.UserName}");
+    Console.WriteLine($"This will update {selectedGroup.Connections.Count} connection(s)");
+
+    // Step 6: Prompt for new connection details
     Console.WriteLine("\n" + new string('=', 80));
     Console.WriteLine("ENTER NEW CONNECTION DETAILS");
     Console.WriteLine(new string('=', 80));
-    Console.WriteLine("(Press Enter to keep current value)\n");
+    Console.WriteLine();
 
-    Console.Write($"Server Address [{selectedConnection.Connection.ServerAddress}]: ");
+    Console.Write($"New Server Address: ");
     string? newServerAddress = Console.ReadLine();
     if (string.IsNullOrWhiteSpace(newServerAddress))
-        newServerAddress = selectedConnection.Connection.ServerAddress;
+    {
+        Console.WriteLine("\n✗ Server address is required.");
+        await authenticator.SignOutAsync(authResponse.Token, authResponse.SiteId);
+        return;
+    }
 
-    Console.Write($"Server Port [{selectedConnection.Connection.ServerPort}]: ");
+    Console.Write($"New Server Port: ");
     string? newServerPort = Console.ReadLine();
     if (string.IsNullOrWhiteSpace(newServerPort))
-        newServerPort = selectedConnection.Connection.ServerPort;
+    {
+        Console.WriteLine("\n✗ Server port is required.");
+        await authenticator.SignOutAsync(authResponse.Token, authResponse.SiteId);
+        return;
+    }
 
-    Console.Write($"Username [{selectedConnection.Connection.UserName}]: ");
+    Console.Write($"New Username: ");
     string? newUserName = Console.ReadLine();
     if (string.IsNullOrWhiteSpace(newUserName))
-        newUserName = selectedConnection.Connection.UserName ?? "";
+    {
+        Console.WriteLine("\n✗ Username is required.");
+        await authenticator.SignOutAsync(authResponse.Token, authResponse.SiteId);
+        return;
+    }
 
-    Console.Write("Password: ");
+    Console.Write("New Password: ");
     string newPassword = ReadPassword();
     Console.WriteLine();
 
     if (string.IsNullOrWhiteSpace(newPassword))
     {
-        Console.WriteLine("\n✗ Password is required to update the connection.");
+        Console.WriteLine("\n✗ Password is required.");
         await authenticator.SignOutAsync(authResponse.Token, authResponse.SiteId);
         return;
     }
 
-    // Step 6: Confirm update
+    // Step 7: Confirm update
     Console.WriteLine("\n" + new string('=', 80));
-    Console.WriteLine("CONFIRM UPDATE");
+    Console.WriteLine("CONFIRM BATCH UPDATE");
     Console.WriteLine(new string('=', 80));
-    Console.WriteLine($"Data Source: {selectedConnection.DataSourceName}");
-    Console.WriteLine($"Connection ID: {selectedConnection.Connection.Id}");
-    Console.WriteLine($"New Server Address: {newServerAddress}");
-    Console.WriteLine($"New Server Port: {newServerPort}");
-    Console.WriteLine($"New Username: {newUserName}");
-    Console.WriteLine($"Password: ********");
-    Console.Write("\nProceed with update? (y/n): ");
+    Console.WriteLine($"Old: Server={selectedGroup.ServerAddress}, Port={selectedGroup.ServerPort}, Username={selectedGroup.UserName}");
+    Console.WriteLine($"New: Server={newServerAddress}, Port={newServerPort}, Username={newUserName}");
+    Console.WriteLine($"\nThis will update {selectedGroup.Connections.Count} connection(s) in the following data sources:");
+    foreach (var (dsId, dsName, connId) in selectedGroup.Connections)
+    {
+        Console.WriteLine($"  - {dsName}");
+    }
+    Console.Write("\nProceed with batch update? (y/n): ");
     string? confirm = Console.ReadLine();
 
     if (confirm?.ToLower() != "y")
@@ -162,25 +198,39 @@ try
         return;
     }
 
-    // Step 7: Update the connection
-    Console.WriteLine("\nUpdating connection...");
-    bool success = await lister.UpdateDataSourceConnectionAsync(
-        authResponse.Token,
-        authResponse.SiteId,
-        selectedConnection.DataSourceId,
-        selectedConnection.Connection.Id,
-        newServerAddress,
-        newServerPort,
-        newUserName,
-        newPassword);
+    // Step 8: Update all connections in the group
+    Console.WriteLine("\nUpdating connections...");
+    int successCount = 0;
+    int failCount = 0;
 
-    if (success)
+    foreach (var (dsId, dsName, connId) in selectedGroup.Connections)
     {
-        Console.WriteLine("\n✓ Connection updated successfully!");
+        Console.Write($"  Updating {dsName}... ");
+        bool success = await lister.UpdateDataSourceConnectionAsync(
+            authResponse.Token,
+            authResponse.SiteId,
+            dsId,
+            connId,
+            newServerAddress,
+            newServerPort,
+            newUserName,
+            newPassword);
+
+        if (success)
+        {
+            successCount++;
+        }
+        else
+        {
+            failCount++;
+        }
     }
-    else
+
+    Console.WriteLine($"\n✓ Batch update complete!");
+    Console.WriteLine($"  Successfully updated: {successCount}");
+    if (failCount > 0)
     {
-        Console.WriteLine("\n✗ Failed to update connection. See error messages above.");
+        Console.WriteLine($"  Failed: {failCount}");
     }
 
     // Sign out
@@ -221,4 +271,14 @@ static string ReadPassword()
     while (key.Key != ConsoleKey.Enter);
 
     return password;
+}
+
+// Class to represent a group of connections with the same server/port/username
+class UniqueConnectionGroup
+{
+    public int Id { get; set; }
+    public string ServerAddress { get; set; } = string.Empty;
+    public string ServerPort { get; set; } = string.Empty;
+    public string UserName { get; set; } = string.Empty;
+    public List<(string DataSourceId, string DataSourceName, string ConnectionId)> Connections { get; set; } = new();
 }

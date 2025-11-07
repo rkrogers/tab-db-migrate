@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("tab-db-migrate")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cfa31221fdc1039c15b170fb9b51995ec7dad339")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d9e4e767ea0c082a49533e3dfb11e8e8567ab425")]
 [assembly: System.Reflection.AssemblyProductAttribute("tab-db-migrate")]
 [assembly: System.Reflection.AssemblyTitleAttribute("tab-db-migrate")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
