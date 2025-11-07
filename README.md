@@ -126,6 +126,7 @@ dotnet run
 ```
 
 The application will prompt you for:
+- Tableau Server URL
 - PAT token name
 - PAT token secret (hidden input)
 - Site name
@@ -133,12 +134,22 @@ The application will prompt you for:
 #### Option 2: Command-Line Arguments
 
 ```bash
-dotnet run "token-name" "token-secret" "site-name"
+dotnet run "server-url" "token-name" "token-secret" "site-name"
 ```
 
-Example:
+**Tableau Cloud Example:**
 ```bash
-dotnet run "my-pat-token" "abc123xyz789..." "mysite"
+dotnet run "https://10ay.online.tableau.com" "my-pat-token" "abc123xyz789..." "mysite"
+```
+
+**Tableau Server Example:**
+```bash
+dotnet run "https://tableau.mycompany.com" "my-pat-token" "abc123xyz789..." "finance"
+```
+
+**Tableau Server (Default Site) Example:**
+```bash
+dotnet run "https://tableau.mycompany.com" "my-pat-token" "abc123xyz789..." ""
 ```
 
 #### Option 3: Using the Published Executable
@@ -147,12 +158,12 @@ If you created a standalone executable:
 
 **Windows:**
 ```powershell
-.\tab-db-migrate.exe "token-name" "token-secret" "site-name"
+.\tab-db-migrate.exe "server-url" "token-name" "token-secret" "site-name"
 ```
 
 **macOS/Linux:**
 ```bash
-./tab-db-migrate "token-name" "token-secret" "site-name"
+./tab-db-migrate "server-url" "token-name" "token-secret" "site-name"
 ```
 
 ### Workflow
@@ -228,39 +239,31 @@ Signing out...
 
 ## Configuration
 
-### For Tableau Cloud
+### No Code Changes Required!
 
-The default configuration is set for Tableau Cloud. To use with your specific Tableau Cloud instance, edit the `serverUrl` constant at the top of `Program.cs`:
+The application now accepts the server URL as a command-line parameter or interactive prompt, so **you don't need to edit any code** to switch between Tableau Cloud and Tableau Server.
+
+**Simply provide the appropriate server URL when running the application:**
+
+- **For Tableau Cloud:** Use your pod URL (e.g., `https://10ay.online.tableau.com`)
+- **For Tableau Server:** Use your on-premises server URL (e.g., `https://tableau.mycompany.com`)
+
+### API Version
+
+The default API version is `3.21`. To use a different version, edit the `apiVersion` constant at the top of `Program.cs`:
 
 ```csharp
-const string serverUrl = "https://10ay.online.tableau.com";  // Change to your pod
-const string apiVersion = "3.21";
+const string apiVersion = "3.21";  // Change if needed
 ```
 
-### For Tableau Server (On-Premises)
+### Important Notes for Tableau Server
 
-To use with an on-premises Tableau Server, update the `serverUrl` in `Program.cs` to point to your Tableau Server:
-
-```csharp
-const string serverUrl = "https://tableau.mycompany.com";  // Your Tableau Server URL
-const string apiVersion = "3.21";  // Or your server's API version
-```
-
-**Important for Tableau Server:**
-- Ensure your Tableau Server is version 2019.4 or later (required for PAT support)
-- Use the base server URL without the `/api` path
-- The site name should be the content URL of your site (use empty string `""` for the Default site)
-- Verify that Personal Access Tokens are enabled on your server
-
-**Example for Default Site:**
-```bash
-dotnet run "my-pat-token" "abc123xyz789..." ""
-```
-
-**Example for Named Site:**
-```bash
-dotnet run "my-pat-token" "abc123xyz789..." "finance"
-```
+When using with on-premises Tableau Server:
+- Ensure your Tableau Server is version **2019.4 or later** (required for PAT support)
+- Use the base server URL **without** the `/api` path
+- For the **Default site**, use an empty string `""` as the site name parameter
+- For **named sites**, use the site's content URL (e.g., `finance`, not `https://.../#/site/finance`)
+- Verify that Personal Access Tokens are enabled on your server (usually enabled by default)
 
 ## Security Considerations
 

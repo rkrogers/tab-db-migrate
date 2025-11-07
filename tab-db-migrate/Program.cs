@@ -3,24 +3,28 @@
 
 using tab_db_migrate;
 
-// Tableau Cloud configuration
-const string serverUrl = "https://10ay.online.tableau.com"; // Your Tableau Cloud server URL
-const string apiVersion = "3.21"; // API version
+// API version configuration
+const string apiVersion = "3.21";
 
 Console.WriteLine("Tableau Data Source Connection Manager");
 Console.WriteLine("======================================\n");
 
-// Get PAT credentials
-string tokenName, tokenSecret, siteName;
+// Get configuration
+string serverUrl, tokenName, tokenSecret, siteName;
 
-if (args.Length >= 2)
+if (args.Length >= 3)
 {
-    tokenName = args[0];
-    tokenSecret = args[1];
-    siteName = args.Length > 2 ? args[2] : "";
+    // Command-line arguments: serverUrl tokenName tokenSecret [siteName]
+    serverUrl = args[0];
+    tokenName = args[1];
+    tokenSecret = args[2];
+    siteName = args.Length > 3 ? args[3] : "";
 }
 else
 {
+    Console.Write("Enter Tableau Server URL (e.g., https://10ay.online.tableau.com): ");
+    serverUrl = Console.ReadLine() ?? "";
+
     Console.Write("Enter your PAT token name: ");
     tokenName = Console.ReadLine() ?? "";
 
@@ -31,9 +35,9 @@ else
     Console.Write("Enter site name (leave empty for default site): ");
     siteName = Console.ReadLine() ?? "";
 
-    if (string.IsNullOrWhiteSpace(tokenName) || string.IsNullOrWhiteSpace(tokenSecret))
+    if (string.IsNullOrWhiteSpace(serverUrl) || string.IsNullOrWhiteSpace(tokenName) || string.IsNullOrWhiteSpace(tokenSecret))
     {
-        Console.WriteLine("Error: PAT token name and secret are required.");
+        Console.WriteLine("Error: Server URL, PAT token name and secret are required.");
         return;
     }
 }
