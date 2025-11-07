@@ -23,9 +23,32 @@ public class TableauDataSourceLister
     /// <param name="apiVersion">The Tableau REST API version (e.g., "3.21")</param>
     public TableauDataSourceLister(string serverUrl, string apiVersion = "3.21")
     {
-        _serverUrl = serverUrl.TrimEnd('/');
+        _serverUrl = CleanServerUrl(serverUrl);
         _apiVersion = apiVersion;
         _httpClient = new HttpClient();
+    }
+
+    /// <summary>
+    /// Cleans and validates the server URL by removing common mistakes like site paths
+    /// </summary>
+    private static string CleanServerUrl(string url)
+    {
+        url = url.TrimEnd('/');
+        
+        // Remove common patterns users might include
+        // e.g., "https://10ay.online.tableau.com/#/site/mysite" -> "https://10ay.online.tableau.com"
+        if (url.Contains("/#/"))
+        {
+            url = url.Substring(0, url.IndexOf("/#/"));
+        }
+        
+        // Remove "/api" if included
+        if (url.EndsWith("/api"))
+        {
+            url = url.Substring(0, url.Length - 4);
+        }
+        
+        return url;
     }
 
     /// <summary>
