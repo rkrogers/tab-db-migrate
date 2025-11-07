@@ -22,6 +22,37 @@ if (args.Length >= 3)
 }
 else
 {
+    // Display tool information when running interactively
+    Console.WriteLine("ABOUT THIS TOOL");
+    Console.WriteLine(new string('-', 80));
+    Console.WriteLine("This tool helps you efficiently manage data source connections in Tableau Cloud");
+    Console.WriteLine("and Tableau Server. It allows you to:");
+    Console.WriteLine();
+    Console.WriteLine("  • Group connections by unique server/port/username combinations");
+    Console.WriteLine("  • Update multiple data source connections in one batch operation");
+    Console.WriteLine("  • Save time when changing database credentials across many data sources");
+    Console.WriteLine();
+    Console.WriteLine("Compatible with:");
+    Console.WriteLine("  ✓ Tableau Cloud (all sites)");
+    Console.WriteLine("  ✓ Tableau Server 2019.4+ (requires Personal Access Token support)");
+    Console.WriteLine();
+    Console.WriteLine(new string('-', 80));
+    Console.WriteLine();
+    Console.WriteLine("AUTHENTICATION REQUIRED");
+    Console.WriteLine(new string('-', 80));
+    Console.WriteLine("You'll need to provide:");
+    Console.WriteLine("  1. Your Tableau Server or Cloud URL");
+    Console.WriteLine("  2. A Personal Access Token (PAT) - not username/password");
+    Console.WriteLine("  3. Your site name (or leave blank for Default site)");
+    Console.WriteLine();
+    Console.WriteLine("To create a PAT:");
+    Console.WriteLine("  • Tableau Cloud: Account Settings → Personal Access Tokens");
+    Console.WriteLine("  • Tableau Server: My Account Settings → Personal Access Tokens");
+    Console.WriteLine();
+    Console.WriteLine(new string('-', 80));
+    Console.WriteLine();
+
+    // Prompt for authentication details
     Console.Write("Enter Tableau Server URL (e.g., https://10ay.online.tableau.com): ");
     serverUrl = Console.ReadLine() ?? "";
 
@@ -32,7 +63,7 @@ else
     tokenSecret = ReadPassword();
     Console.WriteLine();
 
-    Console.Write("Enter site name (leave empty for default site): ");
+    Console.Write("Enter site name (leave blank for Default site): ");
     siteName = Console.ReadLine() ?? "";
 
     if (string.IsNullOrWhiteSpace(serverUrl) || string.IsNullOrWhiteSpace(tokenName) || string.IsNullOrWhiteSpace(tokenSecret))
