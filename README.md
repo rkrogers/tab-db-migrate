@@ -1,6 +1,6 @@
 # Tableau Data Source Connection Manager
 
-A command-line tool for managing and batch-updating data source connections in Tableau Cloud. This tool allows you to efficiently update database credentials across multiple data sources that share the same connection details.
+A command-line tool for managing and batch-updating data source connections in Tableau Cloud and Tableau Server. This tool allows you to efficiently update database credentials across multiple data sources that share the same connection details.
 
 ## Features
 
@@ -27,10 +27,16 @@ The tool performs the following operations:
 
 If you have 10 data sources all connecting to the same database with the same credentials, instead of updating each one individually, you can update all 10 at once by modifying a single entry in the list.
 
+## Compatibility
+
+This tool works with:
+- ✅ **Tableau Cloud** - All sites
+- ✅ **Tableau Server** - Version 2019.4 and later (when PAT authentication was introduced)
+
 ## Prerequisites
 
 - [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0) or later
-- A Tableau Cloud account with:
+- A Tableau Cloud or Tableau Server account with:
   - Personal Access Token (PAT)
   - Permission to modify data source connections
 - Git (for cloning the repository)
@@ -222,11 +228,38 @@ Signing out...
 
 ## Configuration
 
-To change the default Tableau Cloud server URL or API version, edit the constants at the top of `Program.cs`:
+### For Tableau Cloud
+
+The default configuration is set for Tableau Cloud. To use with your specific Tableau Cloud instance, edit the `serverUrl` constant at the top of `Program.cs`:
 
 ```csharp
-const string serverUrl = "https://10ay.online.tableau.com";
+const string serverUrl = "https://10ay.online.tableau.com";  // Change to your pod
 const string apiVersion = "3.21";
+```
+
+### For Tableau Server (On-Premises)
+
+To use with an on-premises Tableau Server, update the `serverUrl` in `Program.cs` to point to your Tableau Server:
+
+```csharp
+const string serverUrl = "https://tableau.mycompany.com";  // Your Tableau Server URL
+const string apiVersion = "3.21";  // Or your server's API version
+```
+
+**Important for Tableau Server:**
+- Ensure your Tableau Server is version 2019.4 or later (required for PAT support)
+- Use the base server URL without the `/api` path
+- The site name should be the content URL of your site (use empty string `""` for the Default site)
+- Verify that Personal Access Tokens are enabled on your server
+
+**Example for Default Site:**
+```bash
+dotnet run "my-pat-token" "abc123xyz789..." ""
+```
+
+**Example for Named Site:**
+```bash
+dotnet run "my-pat-token" "abc123xyz789..." "finance"
 ```
 
 ## Security Considerations
