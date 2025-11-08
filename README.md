@@ -1,31 +1,39 @@
-# Tableau Data Source Connection Manager
+# Tableau Connection Manager
 
-A command-line tool for managing and batch-updating data source connections in Tableau Cloud and Tableau Server. This tool allows you to efficiently update database credentials across multiple data sources that share the same connection details.
+A command-line tool for managing and batch-updating data source and workbook connections in Tableau Cloud and Tableau Server. This tool allows you to efficiently update database credentials across multiple data sources and workbooks that share the same connection details.
 
 ## Features
 
 - 🔐 **Secure Authentication** - Uses Personal Access Tokens (PAT) for Tableau Cloud authentication
-- 📊 **Smart Grouping** - Automatically groups connections by unique server/port/username combinations
-- 🔄 **Batch Updates** - Update multiple data source connections at once
+- 📊 **Comprehensive Coverage** - Manages connections from both published data sources AND workbooks
+- 🔗 **Smart Grouping** - Automatically groups connections by unique server/port/username combinations
+- 🔄 **Batch Updates** - Update multiple connections at once across data sources and workbooks
 - 💻 **Interactive Console** - User-friendly command-line interface
 - 🔒 **Secure Password Input** - Masked password entry for security
 - ✅ **Validation & Confirmation** - Shows what will be updated before making changes
+- 📈 **Visual Indicators** - Clear icons distinguish data source (📊) from workbook (📈) connections
 
 ## What It Does
 
 The tool performs the following operations:
 
 1. **Authenticates** with Tableau Cloud using your Personal Access Token
-2. **Enumerates** all data sources and their connections on your site
-3. **Groups** connections by unique combinations of server address, port, and username
-4. **Displays** a numbered list of unique connections with the data sources that use them
-5. **Allows** you to select a connection group to update
-6. **Prompts** for new connection details (server, port, username, password)
-7. **Updates** all data sources that use the selected connection in one batch operation
+2. **Enumerates** all data sources and workbooks on your site
+3. **Queries** connections from both published data sources and workbook-embedded connections
+4. **Groups** connections by unique combinations of server address, port, and username
+5. **Displays** a numbered list of unique connections showing which data sources and workbooks use them
+6. **Allows** you to select a connection group to update
+7. **Prompts** for new connection details (server, port, username, password)
+8. **Updates** all data sources and workbooks that use the selected connection in one batch operation
 
 ### Example Use Case
 
-If you have 10 data sources all connecting to the same database with the same credentials, instead of updating each one individually, you can update all 10 at once by modifying a single entry in the list.
+If you have 5 data sources and 10 workbooks all connecting to the same database with the same credentials, instead of updating each one individually (15 updates!), you can update all 15 at once by modifying a single entry in the list.
+
+**Real-World Scenario:** You need to update the production database password. With this tool, you can:
+- See all 15 assets using that connection in one view
+- Update the password once
+- Have all 15 connections (data sources + workbooks) updated automatically
 
 ## Compatibility
 
@@ -38,7 +46,7 @@ This tool works with:
 - [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0) or later
 - A Tableau Cloud or Tableau Server account with:
   - Personal Access Token (PAT)
-  - Permission to modify data source connections
+  - Permission to modify data source and workbook connections
 - Git (for cloning the repository)
 
 ## Installation
@@ -169,7 +177,7 @@ If you created a standalone executable:
 ### Workflow
 
 1. **Authentication**: The tool authenticates with Tableau Cloud
-2. **Enumeration**: Displays all unique connection combinations with their IDs
+2. **Enumeration**: Queries all data sources and workbooks, displaying unique connection combinations
 3. **Selection**: Enter the ID number of the connection you want to modify
 4. **Input**: Provide new connection details:
    - Server address
@@ -177,7 +185,7 @@ If you created a standalone executable:
    - Username
    - Password (masked input)
 5. **Confirmation**: Review the changes and confirm
-6. **Update**: The tool updates all matching connections
+6. **Update**: The tool updates all matching connections across data sources and workbooks
 7. **Results**: See a summary of successful/failed updates
 
 ### Example Session
@@ -189,32 +197,48 @@ Tableau Data Source Connection Manager
 Authenticating with Tableau Cloud using PAT...
 ✓ Authentication successful!
 
-Enumerating data sources and connections...
+Enumerating data sources and workbooks...
+Found 12 data sources on the site.
+Found 8 workbooks on the site.
 
 ================================================================================
-UNIQUE DATA SOURCE CONNECTIONS
+UNIQUE CONNECTIONS (Data Sources + Workbooks)
 ================================================================================
 
 [1] Server: db.example.com, Port: 5432, Username: admin
-    Used by 5 connection(s):
-      - Sales Data
-      - Customer Data
-      - Product Catalog
-      - Orders Database
-      - Inventory System
+    Used by 7 connection(s):
+      Data Sources: 3, Workbooks: 4
+      📊 Sales Data (datasource)
+      📊 Customer Data (datasource)
+      📊 Product Catalog (datasource)
+      📈 Sales Dashboard (workbook)
+      📈 Customer Analysis (workbook)
+      📈 Executive Summary (workbook)
+      📈 Regional Report (workbook)
 
 [2] Server: warehouse.example.com, Port: 1521, Username: etl_user
-    Used by 2 connection(s):
-      - Data Warehouse
-      - Analytics DB
+    Used by 3 connection(s):
+      Data Sources: 2, Workbooks: 1
+      📊 Data Warehouse (datasource)
+      📊 Analytics DB (datasource)
+      📈 ETL Monitor (workbook)
+
+[3] Server: 10az.online.tableau.com, Port: 443, Username: 
+    Used by 5 connection(s):
+      Data Sources: 0, Workbooks: 5
+      📈 Admin Insights (workbook)
+      📈 User Activity (workbook)
+      📈 Content Usage (workbook)
+      📈 Performance Metrics (workbook)
+      📈 Site Statistics (workbook)
 
 ================================================================================
 
-Enter the ID of the connection you want to modify [1-2] (or 'q' to quit): 1
+Enter the ID of the connection you want to modify [1-3] (or 'q' to quit): 1
 
 Selected connection group #1
 Current: Server=db.example.com, Port=5432, Username=admin
-This will update 5 connection(s)
+This will update 7 connection(s) (3 data sources, 4 workbooks)
 
 New Server Address: db-new.example.com
 New Server Port: 5432
@@ -224,18 +248,38 @@ New Password: ********
 Proceed with batch update? (y/n): y
 
 Updating connections...
-  Updating Sales Data... ✓
-  Updating Customer Data... ✓
-  Updating Product Catalog... ✓
-  Updating Orders Database... ✓
-  Updating Inventory System... ✓
+  Updating Sales Data (datasource)... ✓
+  Updating Customer Data (datasource)... ✓
+  Updating Product Catalog (datasource)... ✓
+  Updating Sales Dashboard (workbook)... ✓
+  Updating Customer Analysis (workbook)... ✓
+  Updating Executive Summary (workbook)... ✓
+  Updating Regional Report (workbook)... ✓
 
 ✓ Batch update complete!
-  Successfully updated: 5
+  Successfully updated: 7
 
 Signing out...
 ✓ Signed out successfully!
 ```
+
+## Connection Types
+
+The tool manages two types of connections:
+
+### 📊 Data Source Connections
+Published data sources that are shared across multiple workbooks. These are managed through the Data Sources API.
+
+### 📈 Workbook Connections
+Connections embedded directly in workbooks (not using published data sources). These are managed through the Workbooks API.
+
+### Smart Deduplication
+Connections are grouped by their unique combination of:
+- Server address
+- Server port  
+- Username
+
+This means a single connection profile might be used by multiple data sources AND workbooks. The tool lets you update all of them at once, regardless of whether they're in published data sources or embedded in workbooks.
 
 ## Configuration
 
@@ -280,14 +324,14 @@ When using with on-premises Tableau Server:
 - Ensure the site name is correct
 - Check that your account has API access enabled
 
-### "Failed to query data sources"
-- Verify your account has permission to view data sources
+### "Failed to query data sources" or "Failed to query workbooks"
+- Verify your account has permission to view data sources and workbooks
 - Check that the site name matches your Tableau Cloud site
 
 ### "Failed to update connection"
-- Ensure your account has permission to modify data source connections
+- Ensure your account has permission to modify data source and workbook connections
 - Verify the new connection details are valid
-- Check that the data source connection supports updates
+- Check that the data source/workbook connection supports updates
 
 ## Technical Details
 
@@ -298,11 +342,19 @@ When using with on-premises Tableau Server:
 
 ### API Endpoints Used
 
+#### Authentication
 - `POST /api/{version}/auth/signin` - Authentication with PAT
-- `GET /api/{version}/sites/{site-id}/datasources` - Query data sources
-- `GET /api/{version}/sites/{site-id}/datasources/{datasource-id}/connections` - Query connections
-- `PUT /api/{version}/sites/{site-id}/datasources/{datasource-id}/connections/{connection-id}` - Update connection
 - `POST /api/{version}/auth/signout` - Sign out
+
+#### Data Sources
+- `GET /api/{version}/sites/{site-id}/datasources` - Query data sources
+- `GET /api/{version}/sites/{site-id}/datasources/{datasource-id}/connections` - Query data source connections
+- `PUT /api/{version}/sites/{site-id}/datasources/{datasource-id}/connections/{connection-id}` - Update data source connection
+
+#### Workbooks
+- `GET /api/{version}/sites/{site-id}/workbooks` - Query workbooks
+- `GET /api/{version}/sites/{site-id}/workbooks/{workbook-id}/connections` - Query workbook connections
+- `PUT /api/{version}/sites/{site-id}/workbooks/{workbook-id}/connections/{connection-id}` - Update workbook connection
 
 ## Project Structure
 
@@ -311,7 +363,7 @@ tab-db-migrate/
 ├── tab-db-migrate/
 │   ├── Program.cs              # Main application and user interface
 │   ├── TableauAuthenticator.cs # PAT authentication handling
-│   ├── List.cs                 # Data source enumeration and updates
+│   ├── List.cs                 # Data source & workbook enumeration and updates
 │   └── tab-db-migrate.csproj   # Project configuration
 ├── tab-db-migrate.sln          # Solution file
 └── README.md                   # This file
@@ -323,7 +375,7 @@ Contributions are welcome! Please feel free to submit issues or pull requests.
 
 ## License
 
-This project is provided as-is for use with Tableau Cloud.
+This project is provided as-is for use with Tableau Cloud and Tableau Server.
 
 ## Support
 
