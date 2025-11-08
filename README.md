@@ -283,10 +283,6 @@ This means a single connection profile might be used by multiple data sources AN
 
 ## Configuration
 
-### No Code Changes Required!
-
-The application now accepts the server URL as a command-line parameter or interactive prompt, so **you don't need to edit any code** to switch between Tableau Cloud and Tableau Server.
-
 **Simply provide the appropriate server URL when running the application:**
 
 - **For Tableau Cloud:** Use your pod URL (e.g., `https://10ay.online.tableau.com`)
