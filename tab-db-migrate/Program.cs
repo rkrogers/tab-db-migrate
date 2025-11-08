@@ -1,4 +1,4 @@
-﻿// Tableau Data Source Connection Manager
+// Tableau Data Source Connection Manager
 // Authenticates with PAT and allows batch updating of data source connections
 
 using tab_db_migrate;
@@ -29,8 +29,8 @@ else
     Console.WriteLine("and Tableau Server. It allows you to:");
     Console.WriteLine();
     Console.WriteLine("  • Group connections by unique server/port/username combinations");
-    Console.WriteLine("  • Update multiple data source connections in one batch operation");
-    Console.WriteLine("  • Save time when changing database credentials across many data sources");
+    Console.WriteLine("  • Update multiple data source AND workbook connections in one batch operation");
+    Console.WriteLine("  • Save time when changing database credentials across many assets");
     Console.WriteLine();
     Console.WriteLine("Compatible with:");
     Console.WriteLine("  ✓ Tableau Cloud (all sites)");
@@ -81,20 +81,22 @@ try
     var authResponse = await authenticator.SignInWithPATAsync(tokenName, tokenSecret, siteName);
     Console.WriteLine("✓ Authentication successful!\n");
 
-    // Step 2: Enumerate data sources and connections
-    Console.WriteLine("Enumerating data sources and connections...\n");
+    // Step 2: Enumerate data sources and workbooks with their connections
+    Console.WriteLine("Enumerating data sources and workbooks...\n");
     var lister = new TableauDataSourceLister(serverUrl, apiVersion);
-    var inventory = await lister.EnumerateDataSourcesAsync(authResponse.Token, authResponse.SiteId);
+    
+    var dataSourceInventory = await lister.EnumerateDataSourcesAsync(authResponse.Token, authResponse.SiteId);
+    var workbooks = await lister.EnumerateWorkbooksAsync(authResponse.Token, authResponse.SiteId);
 
-    // Step 3: Group connections by unique (serverAddress, serverPort, userName) combinations
+    // Step 3: Merge and deduplicate connections from both data sources and workbooks
     var uniqueConnections = new Dictionary<string, UniqueConnectionGroup>();
     int groupId = 1;
 
-    foreach (var ds in inventory.DataSources)
+    // Add data source connections
+    foreach (var ds in dataSourceInventory.DataSources)
     {
         foreach (var conn in ds.Connections)
         {
-            // Create a unique key based on server, port, and username
             string key = $"{conn.ServerAddress}|{conn.ServerPort}|{conn.UserName}";
             
             if (!uniqueConnections.ContainsKey(key))
@@ -105,11 +107,46 @@ try
                     ServerAddress = conn.ServerAddress,
                     ServerPort = conn.ServerPort,
                     UserName = conn.UserName,
-                    Connections = new List<(string DataSourceId, string DataSourceName, string ConnectionId)>()
+                    Sources = new List<ConnectionSource>()
                 };
             }
 
-            uniqueConnections[key].Connections.Add((ds.Id, ds.Name, conn.Id));
+            uniqueConnections[key].Sources.Add(new ConnectionSource
+            {
+                SourceType = "datasource",
+                SourceId = ds.Id,
+                SourceName = ds.Name,
+                ConnectionId = conn.Id
+            });
+        }
+    }
+
+    // Add workbook connections
+    foreach (var wb in workbooks)
+    {
+        foreach (var conn in wb.Connections)
+        {
+            string key = $"{conn.ServerAddress}|{conn.ServerPort}|{conn.UserName}";
+            
+            if (!uniqueConnections.ContainsKey(key))
+            {
+                uniqueConnections[key] = new UniqueConnectionGroup
+                {
+                    Id = groupId++,
+                    ServerAddress = conn.ServerAddress,
+                    ServerPort = conn.ServerPort,
+                    UserName = conn.UserName,
+                    Sources = new List<ConnectionSource>()
+                };
+            }
+
+            uniqueConnections[key].Sources.Add(new ConnectionSource
+            {
+                SourceType = "workbook",
+                SourceId = wb.Id,
+                SourceName = wb.Name,
+                ConnectionId = conn.Id
+            });
         }
     }
 
@@ -120,19 +157,26 @@ try
         return;
     }
 
-    // Step 4: Display unique connections
+    // Step 4: Display unique connections with sources
     Console.WriteLine("\n" + new string('=', 80));
-    Console.WriteLine("UNIQUE DATA SOURCE CONNECTIONS");
+    Console.WriteLine("UNIQUE CONNECTIONS (Data Sources + Workbooks)");
     Console.WriteLine(new string('=', 80));
     Console.WriteLine();
 
     foreach (var group in uniqueConnections.Values.OrderBy(g => g.Id))
     {
         Console.WriteLine($"[{group.Id}] Server: {group.ServerAddress}, Port: {group.ServerPort}, Username: {group.UserName}");
-        Console.WriteLine($"    Used by {group.Connections.Count} connection(s):");
-        foreach (var (dsId, dsName, connId) in group.Connections)
+        Console.WriteLine($"    Used by {group.Sources.Count} connection(s):");
+        
+        var dataSourceCount = group.Sources.Count(s => s.SourceType == "datasource");
+        var workbookCount = group.Sources.Count(s => s.SourceType == "workbook");
+        
+        Console.WriteLine($"      Data Sources: {dataSourceCount}, Workbooks: {workbookCount}");
+        
+        foreach (var source in group.Sources)
         {
-            Console.WriteLine($"      - {dsName}");
+            string icon = source.SourceType == "datasource" ? "📊" : "📈";
+            Console.WriteLine($"      {icon} {source.SourceName} ({source.SourceType})");
         }
         Console.WriteLine();
     }
@@ -166,7 +210,7 @@ try
 
     Console.WriteLine($"\nSelected connection group #{selectedGroup.Id}");
     Console.WriteLine($"Current: Server={selectedGroup.ServerAddress}, Port={selectedGroup.ServerPort}, Username={selectedGroup.UserName}");
-    Console.WriteLine($"This will update {selectedGroup.Connections.Count} connection(s)");
+    Console.WriteLine($"This will update {selectedGroup.Sources.Count} connection(s) ({selectedGroup.Sources.Count(s => s.SourceType == "datasource")} data sources, {selectedGroup.Sources.Count(s => s.SourceType == "workbook")} workbooks)");
 
     // Step 6: Prompt for new connection details
     Console.WriteLine("\n" + new string('=', 80));
@@ -218,10 +262,10 @@ try
     Console.WriteLine(new string('=', 80));
     Console.WriteLine($"Old: Server={selectedGroup.ServerAddress}, Port={selectedGroup.ServerPort}, Username={selectedGroup.UserName}");
     Console.WriteLine($"New: Server={newServerAddress}, Port={newServerPort}, Username={newUserName}");
-    Console.WriteLine($"\nThis will update {selectedGroup.Connections.Count} connection(s) in the following data sources:");
-    foreach (var (dsId, dsName, connId) in selectedGroup.Connections)
+    Console.WriteLine($"\nThis will update {selectedGroup.Sources.Count} connection(s):");
+    foreach (var source in selectedGroup.Sources)
     {
-        Console.WriteLine($"  - {dsName}");
+        Console.WriteLine($"  • {source.SourceName} ({source.SourceType})");
     }
     Console.Write("\nProceed with batch update? (y/n): ");
     string? confirm = Console.ReadLine();
@@ -233,23 +277,40 @@ try
         return;
     }
 
-    // Step 8: Update all connections in the group
+    // Step 8: Update all connections in the group (data sources and workbooks)
     Console.WriteLine("\nUpdating connections...");
     int successCount = 0;
     int failCount = 0;
 
-    foreach (var (dsId, dsName, connId) in selectedGroup.Connections)
+    foreach (var source in selectedGroup.Sources)
     {
-        Console.Write($"  Updating {dsName}... ");
-        bool success = await lister.UpdateDataSourceConnectionAsync(
-            authResponse.Token,
-            authResponse.SiteId,
-            dsId,
-            connId,
-            newServerAddress,
-            newServerPort,
-            newUserName,
-            newPassword);
+        Console.Write($"  Updating {source.SourceName} ({source.SourceType})... ");
+        bool success;
+
+        if (source.SourceType == "datasource")
+        {
+            success = await lister.UpdateDataSourceConnectionAsync(
+                authResponse.Token,
+                authResponse.SiteId,
+                source.SourceId,
+                source.ConnectionId,
+                newServerAddress,
+                newServerPort,
+                newUserName,
+                newPassword);
+        }
+        else // workbook
+        {
+            success = await lister.UpdateWorkbookConnectionAsync(
+                authResponse.Token,
+                authResponse.SiteId,
+                source.SourceId,
+                source.ConnectionId,
+                newServerAddress,
+                newServerPort,
+                newUserName,
+                newPassword);
+        }
 
         if (success)
         {
@@ -315,5 +376,14 @@ class UniqueConnectionGroup
     public string ServerAddress { get; set; } = string.Empty;
     public string ServerPort { get; set; } = string.Empty;
     public string UserName { get; set; } = string.Empty;
-    public List<(string DataSourceId, string DataSourceName, string ConnectionId)> Connections { get; set; } = new();
+    public List<ConnectionSource> Sources { get; set; } = new();
+}
+
+// Class to represent a source using a connection (either data source or workbook)
+class ConnectionSource
+{
+    public string SourceType { get; set; } = string.Empty; // "datasource" or "workbook"
+    public string SourceId { get; set; } = string.Empty;
+    public string SourceName { get; set; } = string.Empty;
+    public string ConnectionId { get; set; } = string.Empty;
 }
