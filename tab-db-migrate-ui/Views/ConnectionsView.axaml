@@ -1,0 +1,307 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TabDbMigrateUI.ViewModels"
+             xmlns:models="using:TabDbMigrateUI.Models"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="700"
+             x:Class="TabDbMigrateUI.Views.ConnectionsView"
+             x:DataType="vm:ConnectionsViewModel">
+
+    <Grid RowDefinitions="Auto,*" Margin="20">
+        
+        <!-- Header -->
+        <Border Grid.Row="0" 
+                Background="White" 
+                CornerRadius="8" 
+                Padding="20" 
+                Margin="0,0,0,20"
+                BoxShadow="0 1 4 0 #10000000">
+            <StackPanel Spacing="10">
+                <TextBlock Text="Connection Management" 
+                           FontSize="20" 
+                           FontWeight="Bold"/>
+                
+                <!-- Status Message - Success -->
+                <Border Background="#E3F2FD"
+                        CornerRadius="4"
+                        Padding="12">
+                    <Border.IsVisible>
+                        <MultiBinding Converter="{x:Static BoolConverters.And}">
+                            <Binding Path="StatusMessage" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+                            <Binding Path="!HasError"/>
+                        </MultiBinding>
+                    </Border.IsVisible>
+                    <TextBlock Text="{Binding StatusMessage}"
+                               TextWrapping="Wrap"
+                               Foreground="#1565C0"/>
+                </Border>
+                
+                <!-- Status Message - Error -->
+                <Border Background="#FFEBEE"
+                        CornerRadius="4"
+                        Padding="12">
+                    <Border.IsVisible>
+                        <MultiBinding Converter="{x:Static BoolConverters.And}">
+                            <Binding Path="StatusMessage" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+                            <Binding Path="HasError"/>
+                        </MultiBinding>
+                    </Border.IsVisible>
+                    <TextBlock Text="{Binding StatusMessage}"
+                               TextWrapping="Wrap"
+                               Foreground="#C62828"/>
+                </Border>
+            </StackPanel>
+        </Border>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1" ColumnDefinitions="2*,3*">
+            
+            <!-- Left Panel: Connection List -->
+            <Border Grid.Column="0" 
+                    Background="White" 
+                    CornerRadius="8" 
+                    Padding="20" 
+                    Margin="0,0,10,0"
+                    BoxShadow="0 1 4 0 #10000000">
+                
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top"
+                               Text="Unique Connections" 
+                               FontSize="16" 
+                               FontWeight="SemiBold"
+                               Margin="0,0,0,15"/>
+                    
+                    <!-- Loading Indicator -->
+                    <StackPanel DockPanel.Dock="Top"
+                                Orientation="Horizontal" 
+                                HorizontalAlignment="Center" 
+                                Spacing="10"
+                                Margin="0,20"
+                                IsVisible="{Binding IsLoading}">
+                        <TextBlock Text="●" FontSize="20" Foreground="#1976D2">
+                            <TextBlock.Styles>
+                                <Style Selector="TextBlock">
+                                    <Style.Animations>
+                                        <Animation Duration="0:0:1" IterationCount="Infinite">
+                                            <KeyFrame Cue="0%">
+                                                <Setter Property="Opacity" Value="1.0"/>
+                                            </KeyFrame>
+                                            <KeyFrame Cue="50%">
+                                                <Setter Property="Opacity" Value="0.3"/>
+                                            </KeyFrame>
+                                            <KeyFrame Cue="100%">
+                                                <Setter Property="Opacity" Value="1.0"/>
+                                            </KeyFrame>
+                                        </Animation>
+                                    </Style.Animations>
+                                </Style>
+                            </TextBlock.Styles>
+                        </TextBlock>
+                        <TextBlock Text="Loading connections..." 
+                                   VerticalAlignment="Center"
+                                   Foreground="#1976D2"/>
+                    </StackPanel>
+                    
+                    <!-- Connection List -->
+                    <ListBox ItemsSource="{Binding Connections}"
+                             SelectedItem="{Binding SelectedConnection}"
+                             IsVisible="{Binding !IsLoading}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="models:UniqueConnection">
+                                <Border Padding="10" 
+                                        CornerRadius="4"
+                                        Background="Transparent">
+                                    <StackPanel Spacing="5">
+                                        <TextBlock Text="{Binding ServerAddress}" 
+                                                   FontWeight="SemiBold"
+                                                   FontSize="13"/>
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <TextBlock Text="Port:" FontSize="11" Foreground="#666"/>
+                                            <TextBlock Text="{Binding ServerPort}" FontSize="11" Foreground="#666"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <TextBlock Text="User:" FontSize="11" Foreground="#666"/>
+                                            <TextBlock Text="{Binding UserName}" FontSize="11" Foreground="#666"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" Spacing="15">
+                                            <StackPanel Orientation="Horizontal" Spacing="3">
+                                                <TextBlock Text="📊" FontSize="11"/>
+                                                <TextBlock Text="{Binding DataSourceCount}" FontSize="11" FontWeight="Medium" Foreground="#1976D2"/>
+                                                <TextBlock Text="DS" FontSize="11" Foreground="#666"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" Spacing="3">
+                                                <TextBlock Text="📈" FontSize="11"/>
+                                                <TextBlock Text="{Binding WorkbookCount}" FontSize="11" FontWeight="Medium" Foreground="#1976D2"/>
+                                                <TextBlock Text="WB" FontSize="11" Foreground="#666"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </Border>
+
+            <!-- Right Panel: Update Form -->
+            <Border Grid.Column="1" 
+                    Background="White" 
+                    CornerRadius="8" 
+                    Padding="20" 
+                    Margin="10,0,0,0"
+                    BoxShadow="0 1 4 0 #10000000">
+                
+                <ScrollViewer>
+                    <StackPanel Spacing="20" IsEnabled="{Binding !IsUpdating}">
+                        
+                        <TextBlock Text="Update Connection" 
+                                   FontSize="16" 
+                                   FontWeight="SemiBold"/>
+
+                        <!-- Selection Info -->
+                        <Border Background="#F5F5F5" 
+                                CornerRadius="4" 
+                                Padding="15"
+                                IsVisible="{Binding SelectedConnection, Converter={x:Static ObjectConverters.IsNotNull}}">
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="Selected Connection:" 
+                                           FontSize="12" 
+                                           FontWeight="SemiBold"
+                                           Foreground="#666"/>
+                                <TextBlock Text="{Binding SelectedConnection.DisplayName}" 
+                                           FontWeight="Medium"/>
+                                <TextBlock FontSize="12" Foreground="#666">
+                                    <Run Text="Affects:"/>
+                                    <Run Text="{Binding SelectedConnection.TotalAffectedAssets}"/>
+                                    <Run Text="assets"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- No Selection Message -->
+                        <Border Background="#FFF3E0" 
+                                CornerRadius="4" 
+                                Padding="15"
+                                IsVisible="{Binding SelectedConnection, Converter={x:Static ObjectConverters.IsNull}}">
+                            <TextBlock Text="← Select a connection from the list to update it"
+                                       Foreground="#E65100"
+                                       TextWrapping="Wrap"/>
+                        </Border>
+
+                        <!-- Update Form -->
+                        <StackPanel Spacing="15" 
+                                    IsVisible="{Binding SelectedConnection, Converter={x:Static ObjectConverters.IsNotNull}}">
+                            
+                            <!-- New Server Address -->
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="New Server Address" FontWeight="Medium"/>
+                                <TextBox Text="{Binding NewServerAddress}" 
+                                         Watermark="e.g., myserver.database.windows.net"/>
+                            </StackPanel>
+
+                            <!-- New Server Port -->
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="New Server Port" FontWeight="Medium"/>
+                                <TextBox Text="{Binding NewServerPort}" 
+                                         Watermark="e.g., 1433"/>
+                            </StackPanel>
+
+                            <!-- New Username -->
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="New Username" FontWeight="Medium"/>
+                                <TextBox Text="{Binding NewUserName}" 
+                                         Watermark="Database username"/>
+                            </StackPanel>
+
+                            <!-- New Password -->
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="New Password" FontWeight="Medium"/>
+                                <TextBox Text="{Binding NewPassword}" 
+                                         Watermark="Database password"
+                                         PasswordChar="●"/>
+                            </StackPanel>
+
+                            <!-- Update Button -->
+                            <Button Command="{Binding UpdateConnectionCommand}"
+                                    Content="Update All Connections"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Center"
+                                    Height="40"
+                                    FontWeight="SemiBold"
+                                    Background="#1976D2"
+                                    Foreground="White"/>
+
+                            <!-- Updating Indicator -->
+                            <StackPanel Orientation="Horizontal" 
+                                        HorizontalAlignment="Center" 
+                                        Spacing="10"
+                                        IsVisible="{Binding IsUpdating}">
+                                <TextBlock Text="●" FontSize="20" Foreground="#1976D2">
+                                    <TextBlock.Styles>
+                                        <Style Selector="TextBlock">
+                                            <Style.Animations>
+                                                <Animation Duration="0:0:1" IterationCount="Infinite">
+                                                    <KeyFrame Cue="0%">
+                                                        <Setter Property="Opacity" Value="1.0"/>
+                                                    </KeyFrame>
+                                                    <KeyFrame Cue="50%">
+                                                        <Setter Property="Opacity" Value="0.3"/>
+                                                    </KeyFrame>
+                                                    <KeyFrame Cue="100%">
+                                                        <Setter Property="Opacity" Value="1.0"/>
+                                                    </KeyFrame>
+                                                </Animation>
+                                            </Style.Animations>
+                                        </Style>
+                                    </TextBlock.Styles>
+                                </TextBlock>
+                                <TextBlock Text="Updating connections..." 
+                                           VerticalAlignment="Center"
+                                           Foreground="#1976D2"/>
+                            </StackPanel>
+
+                            <!-- Update Results -->
+                            <Border Background="#F5F5F5" 
+                                    CornerRadius="4" 
+                                    Padding="12"
+                                    IsVisible="{Binding UpdateResults, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                                <ScrollViewer MaxHeight="300">
+                                    <TextBlock Text="{Binding UpdateResults}"
+                                               FontFamily="Consolas,Courier New,monospace"
+                                               FontSize="11"
+                                               TextWrapping="Wrap"/>
+                                </ScrollViewer>
+                            </Border>
+
+                            <!-- Affected Assets -->
+                            <Expander Header="View Affected Assets" 
+                                      IsExpanded="False">
+                                <Border Background="#F5F5F5" 
+                                        CornerRadius="4" 
+                                        Padding="12"
+                                        Margin="0,10,0,0">
+                                    <ScrollViewer MaxHeight="200">
+                                        <ItemsControl ItemsSource="{Binding SelectedConnection.AffectedAssets}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding}" 
+                                                               FontSize="11"
+                                                               Margin="0,2"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
+                                </Border>
+                            </Expander>
+
+                        </StackPanel>
+                        
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+        </Grid>
+    </Grid>
+
+</UserControl>

@@ -1,0 +1,151 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:TabDbMigrateUI.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="500"
+             x:Class="TabDbMigrateUI.Views.AuthenticationView"
+             x:DataType="vm:AuthenticationViewModel">
+
+    <Border Background="#F5F5F5" Padding="40">
+        <StackPanel MaxWidth="500" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+            
+            <!-- Title -->
+            <TextBlock Text="Tableau Connection Manager" 
+                       FontSize="24" 
+                       FontWeight="Bold" 
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,20"/>
+            
+            <!-- Login Form -->
+            <Border Background="White" 
+                    CornerRadius="8" 
+                    Padding="30" 
+                    BoxShadow="0 2 10 0 #20000000">
+                
+                <StackPanel Spacing="15">
+                    
+                    <TextBlock Text="Authentication" 
+                               FontSize="18" 
+                               FontWeight="SemiBold"
+                               Margin="0,0,0,10"/>
+                    
+                    <!-- Server URL -->
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Tableau Server URL" FontWeight="Medium"/>
+                        <TextBox Text="{Binding ServerUrl}" 
+                                 Watermark="https://your-server.online.tableau.com"
+                                 IsEnabled="{Binding !IsAuthenticating}"/>
+                    </StackPanel>
+
+                    <!-- PAT Token Name -->
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="PAT Token Name" FontWeight="Medium"/>
+                        <TextBox Text="{Binding TokenName}" 
+                                 Watermark="Your token name"
+                                 IsEnabled="{Binding !IsAuthenticating}"/>
+                    </StackPanel>
+
+                    <!-- PAT Token Secret -->
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="PAT Token Secret" FontWeight="Medium"/>
+                        <TextBox Text="{Binding TokenSecret}" 
+                                 Watermark="Your token secret"
+                                 PasswordChar="●"
+                                 IsEnabled="{Binding !IsAuthenticating}"/>
+                    </StackPanel>
+
+                    <!-- Site Name -->
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Site Name (Optional)" FontWeight="Medium"/>
+                        <TextBox Text="{Binding SiteName}" 
+                                 Watermark="Leave blank for default site"
+                                 IsEnabled="{Binding !IsAuthenticating}"/>
+                        <TextBlock Text="Leave blank for default site" 
+                                   FontSize="11" 
+                                   Foreground="#666"
+                                   FontStyle="Italic"/>
+                    </StackPanel>
+
+                    <!-- Connect Button -->
+                    <Button Command="{Binding ConnectCommand}"
+                            Content="Connect"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            Height="40"
+                            Margin="0,10,0,0"
+                            FontWeight="SemiBold"/>
+
+                    <!-- Status Message - Success -->
+                    <Border Background="#E8F5E9"
+                            CornerRadius="4"
+                            Padding="12"
+                            IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                        <Border.IsVisible>
+                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                <Binding Path="StatusMessage" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+                                <Binding Path="!HasError"/>
+                            </MultiBinding>
+                        </Border.IsVisible>
+                        <TextBlock Text="{Binding StatusMessage}"
+                                   TextWrapping="Wrap"
+                                   Foreground="#2E7D32"/>
+                    </Border>
+                    
+                    <!-- Status Message - Error -->
+                    <Border Background="#FFEBEE"
+                            CornerRadius="4"
+                            Padding="12">
+                        <Border.IsVisible>
+                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                <Binding Path="StatusMessage" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+                                <Binding Path="HasError"/>
+                            </MultiBinding>
+                        </Border.IsVisible>
+                        <TextBlock Text="{Binding StatusMessage}"
+                                   TextWrapping="Wrap"
+                                   Foreground="#C62828"/>
+                    </Border>
+
+                    <!-- Loading Indicator -->
+                    <StackPanel Orientation="Horizontal" 
+                                HorizontalAlignment="Center" 
+                                Spacing="10"
+                                IsVisible="{Binding IsAuthenticating}">
+                        <TextBlock Text="●" FontSize="20" Foreground="#1976D2">
+                            <TextBlock.Styles>
+                                <Style Selector="TextBlock">
+                                    <Style.Animations>
+                                        <Animation Duration="0:0:1" IterationCount="Infinite">
+                                            <KeyFrame Cue="0%">
+                                                <Setter Property="Opacity" Value="1.0"/>
+                                            </KeyFrame>
+                                            <KeyFrame Cue="50%">
+                                                <Setter Property="Opacity" Value="0.3"/>
+                                            </KeyFrame>
+                                            <KeyFrame Cue="100%">
+                                                <Setter Property="Opacity" Value="1.0"/>
+                                            </KeyFrame>
+                                        </Animation>
+                                    </Style.Animations>
+                                </Style>
+                            </TextBlock.Styles>
+                        </TextBlock>
+                        <TextBlock Text="Authenticating..." 
+                                   VerticalAlignment="Center"
+                                   Foreground="#1976D2"/>
+                    </StackPanel>
+                    
+                </StackPanel>
+            </Border>
+
+            <!-- Help Text -->
+            <TextBlock Text="Enter your Tableau Cloud credentials to manage database connections"
+                       HorizontalAlignment="Center"
+                       Foreground="#666"
+                       FontSize="12"/>
+            
+        </StackPanel>
+    </Border>
+
+</UserControl>

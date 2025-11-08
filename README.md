@@ -1,6 +1,23 @@
 # Tableau Connection Manager
 
-A command-line tool for managing and batch-updating data source and workbook connections in Tableau Cloud and Tableau Server. This tool allows you to efficiently update database credentials across multiple data sources and workbooks that share the same connection details.
+A cross-platform tool for managing and batch-updating data source and workbook connections in Tableau Cloud and Tableau Server. Available in both **GUI** and **command-line** versions, this tool allows you to efficiently update database credentials across multiple data sources and workbooks that share the same connection details.
+
+## 🖥️ Two Versions Available
+
+### Desktop GUI Application (NEW!)
+A modern, cross-platform desktop application built with Avalonia UI featuring:
+- 🎨 **Clean, intuitive interface** - No command-line experience needed
+- 🖱️ **Point-and-click operation** - Easy connection management
+- 📊 **Visual connection grouping** - See all affected assets at a glance
+- 🔄 **Real-time updates** - Watch progress as connections update
+- 💻 **Cross-platform** - Runs on Windows, macOS, and Linux
+
+### Command-Line Interface (CLI)
+A powerful terminal-based tool perfect for:
+- 🤖 **Automation** - Script database credential rotations
+- 🔧 **DevOps pipelines** - Integrate with CI/CD workflows
+- 🖥️ **Server environments** - No GUI required
+- 📜 **Batch operations** - Process multiple updates efficiently
 
 ## Features
 
@@ -49,66 +66,204 @@ This tool works with:
   - Permission to modify data source and workbook connections
 - Git (for cloning the repository)
 
-## Installation
+## Installation & Usage
 
-### 1. Clone the Repository
+Choose the version that best fits your workflow:
+
+---
+
+## 🎨 Desktop GUI Application
+
+### Installation
+
+#### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/rkrogers/tab-db-migrate.git
 cd tab-db-migrate
 ```
 
-### 2. Build the Application
+#### 2. Build the GUI Application
 
-The application can be built on Windows, macOS, and Linux.
+```bash
+cd tab-db-migrate-ui
+dotnet build -c Release
+```
 
-#### On Windows
+#### 3. Run the GUI Application
 
+**Development Mode:**
+```bash
+cd tab-db-migrate-ui
+dotnet run
+```
+
+**From Build Output:**
+```bash
+cd tab-db-migrate-ui/bin/Release/net9.0
+./TabDbMigrateUI        # macOS/Linux
+TabDbMigrateUI.exe      # Windows
+```
+
+#### 4. Create Standalone Executable (Recommended)
+
+Build a self-contained executable that doesn't require .NET to be installed:
+
+**Windows (x64):**
+```powershell
+cd tab-db-migrate-ui
+dotnet publish -c Release -r win-x64 --self-contained
+```
+Executable location: `tab-db-migrate-ui/bin/Release/net9.0/win-x64/publish/TabDbMigrateUI.exe`
+
+**macOS (Apple Silicon):**
+```bash
+cd tab-db-migrate-ui
+dotnet publish -c Release -r osx-arm64 --self-contained
+```
+Executable location: `tab-db-migrate-ui/bin/Release/net9.0/osx-arm64/publish/TabDbMigrateUI`
+
+**macOS (Intel):**
+```bash
+cd tab-db-migrate-ui
+dotnet publish -c Release -r osx-x64 --self-contained
+```
+Executable location: `tab-db-migrate-ui/bin/Release/net9.0/osx-x64/publish/TabDbMigrateUI`
+
+**Linux (x64):**
+```bash
+cd tab-db-migrate-ui
+dotnet publish -c Release -r linux-x64 --self-contained
+```
+Executable location: `tab-db-migrate-ui/bin/Release/net9.0/linux-x64/publish/TabDbMigrateUI`
+
+### Using the GUI Application
+
+#### 1. Launch the Application
+
+Double-click the executable or run from terminal:
+```bash
+./TabDbMigrateUI        # macOS/Linux
+TabDbMigrateUI.exe      # Windows (double-click or run from PowerShell)
+```
+
+#### 2. Authentication Screen
+
+When the application launches, you'll see the authentication screen:
+
+1. **Tableau Server URL**: Enter your Tableau Cloud or Server URL
+   - Example: `https://10ay.online.tableau.com`
+   
+2. **PAT Token Name**: Your Personal Access Token name
+
+3. **PAT Token Secret**: Your PAT secret (automatically masked)
+
+4. **Site Name**: Your site's content URL (leave blank for default site)
+   - Example: `mysite` (not the full URL)
+
+5. Click **Connect**
+
+#### 3. Connection Management Screen
+
+After successful authentication:
+
+**Left Panel - Connection List:**
+- View all unique database connections
+- Each entry shows:
+  - Server address and port
+  - Username
+  - Number of data sources using this connection
+  - Number of workbooks using this connection
+- Click a connection to select it
+
+**Right Panel - Update Form:**
+- When you select a connection, the form populates with current values
+- Enter new connection details:
+  - New Server Address
+  - New Server Port
+  - New Username
+  - New Password (automatically masked)
+- Click **Update All Connections** to batch-update all assets using this connection
+- Watch real-time progress in the results section
+- Expand "View Affected Assets" to see the complete list of data sources and workbooks that will be updated
+
+#### 4. Features
+
+- ✅ **Visual Feedback**: Color-coded status messages (green for success, red for errors)
+- ✅ **Animated Progress**: Loading indicators during authentication and updates
+- ✅ **Smart Pre-population**: Selected connection details auto-fill the update form
+- ✅ **Batch Operations**: Update all matching connections with one click
+- ✅ **Detailed Results**: See exactly which assets succeeded or failed
+- ✅ **Asset Browser**: Expandable list of all affected data sources and workbooks
+
+### GUI Screenshots & Workflow
+
+**Typical Workflow:**
+1. **Launch** → Enter Tableau credentials → Click Connect
+2. **Browse** → Review the list of unique connections in your site
+3. **Select** → Click on a connection to see details and affected assets
+4. **Update** → Enter new connection details and click "Update All Connections"
+5. **Verify** → Review the results showing which assets were successfully updated
+
+---
+
+## 💻 Command-Line Interface (CLI)
+
+### Installation
+
+#### 1. Clone the Repository
+
+```bash
+git clone https://github.com/rkrogers/tab-db-migrate.git
+cd tab-db-migrate
+```
+
+#### 2. Build the CLI Application
+
+The CLI application can be built on Windows, macOS, and Linux.
+
+**On Windows:**
 ```powershell
 cd tab-db-migrate
 dotnet build -c Release
 ```
 
-#### On macOS/Linux
-
+**On macOS/Linux:**
 ```bash
 cd tab-db-migrate
 dotnet build -c Release
 ```
 
-### 3. Create a Standalone Executable (Optional)
+#### 3. Create a Standalone Executable (Optional)
 
 To create a self-contained executable that doesn't require .NET to be installed:
 
-#### Windows (x64)
-
+**Windows (x64):**
 ```powershell
+cd tab-db-migrate
 dotnet publish -c Release -r win-x64 --self-contained
 ```
+Executable location: `tab-db-migrate/bin/Release/net9.0/win-x64/publish/tab-db-migrate.exe`
 
-The executable will be in: `tab-db-migrate/bin/Release/net9.0/win-x64/publish/tab-db-migrate.exe`
-
-#### macOS (Apple Silicon)
-
+**macOS (Apple Silicon):**
 ```bash
+cd tab-db-migrate
 dotnet publish -c Release -r osx-arm64 --self-contained
 ```
+Executable location: `tab-db-migrate/bin/Release/net9.0/osx-arm64/publish/tab-db-migrate`
 
-The executable will be in: `tab-db-migrate/bin/Release/net9.0/osx-arm64/publish/tab-db-migrate`
-
-#### macOS (Intel)
-
+**macOS (Intel):**
 ```bash
+cd tab-db-migrate
 dotnet publish -c Release -r osx-x64 --self-contained
 ```
 
-#### Linux (x64)
-
+**Linux (x64):**
 ```bash
+cd tab-db-migrate
 dotnet publish -c Release -r linux-x64 --self-contained
 ```
-
-The executable will be in: `tab-db-migrate/bin/Release/net9.0/linux-x64/publish/tab-db-migrate`
+Executable location: `tab-db-migrate/bin/Release/net9.0/linux-x64/publish/tab-db-migrate`
 
 ## Usage
 
@@ -360,14 +515,41 @@ When using with on-premises Tableau Server:
 
 ```
 tab-db-migrate/
-├── tab-db-migrate/
-│   ├── Program.cs              # Main application and user interface
+├── tab-db-migrate/              # CLI Version
+│   ├── Program.cs              # Main CLI application and user interface
 │   ├── TableauAuthenticator.cs # PAT authentication handling
 │   ├── List.cs                 # Data source & workbook enumeration and updates
-│   └── tab-db-migrate.csproj   # Project configuration
+│   └── tab-db-migrate.csproj   # CLI project configuration
+├── tab-db-migrate-ui/           # GUI Version (NEW!)
+│   ├── Models/
+│   │   └── UniqueConnection.cs # Connection grouping model
+│   ├── ViewModels/
+│   │   ├── ViewModelBase.cs           # Base ViewModel class
+│   │   ├── MainWindowViewModel.cs     # Main window orchestration
+│   │   ├── AuthenticationViewModel.cs # Login screen logic
+│   │   └── ConnectionsViewModel.cs    # Connection management logic
+│   ├── Views/
+│   │   ├── MainWindow.axaml(.cs)        # Main application window
+│   │   ├── AuthenticationView.axaml(.cs) # Login screen UI
+│   │   └── ConnectionsView.axaml(.cs)    # Connection management UI
+│   ├── TableauAuthenticator.cs # PAT authentication (shared logic)
+│   ├── List.cs                 # Data enumeration & updates (shared logic)
+│   ├── App.axaml(.cs)          # Avalonia application entry
+│   ├── Program.cs              # GUI application entry point
+│   ├── ViewLocator.cs          # ViewModel-to-View resolver
+│   └── TabDbMigrateUI.csproj   # GUI project configuration
 ├── tab-db-migrate.sln          # Solution file
 └── README.md                   # This file
 ```
+
+### Architecture Notes
+
+**GUI Version:**
+- Built with **Avalonia UI** - Cross-platform XAML-based framework
+- Follows **MVVM pattern** - Clean separation of UI and logic
+- Uses **CommunityToolkit.Mvvm** - Modern property change notification and commands
+- **Reactive UI** - Real-time updates and async operations
+- **Shared Backend** - Uses same TableauAuthenticator and List classes as CLI
 
 ## Contributing
 
