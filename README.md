@@ -196,7 +196,28 @@ After successful authentication:
 - ✅ **Detailed Results**: See exactly which assets succeeded or failed
 - ✅ **Asset Browser**: Expandable list of all affected data sources and workbooks
 
-### GUI Screenshots & Workflow
+### GUI Screenshots
+
+#### Authentication Screen
+![Authentication Screen](screenshots/auth-screen.png)
+
+The authentication screen provides a clean, centered login form where you can:
+- Enter your Tableau Server URL
+- Provide your PAT Token Name and Secret (automatically masked)
+- Specify your Site Name (or leave blank for default)
+- Click Connect to authenticate
+
+#### Connection Management Screen
+![Connection Management Screen](screenshots/connections-screen.png)
+
+The main connection management interface features:
+- **Left Panel**: List of all unique database connections with data source and workbook counts
+- **Right Panel**: Update form that pre-populates with the selected connection's current values
+- Real-time progress indicators during updates
+- Detailed results showing which assets succeeded or failed
+- Expandable section to view all affected data sources and workbooks
+
+#### Workflow Example
 
 **Typical Workflow:**
 1. **Launch** → Enter Tableau credentials → Click Connect
@@ -204,6 +225,8 @@ After successful authentication:
 3. **Select** → Click on a connection to see details and affected assets
 4. **Update** → Enter new connection details and click "Update All Connections"
 5. **Verify** → Review the results showing which assets were successfully updated
+
+> **Note**: To add screenshots to this repository, run the application, take screenshots of the authentication and connection management screens, and save them in the `screenshots/` directory as `auth-screen.png` and `connections-screen.png`.
 
 ---
 
