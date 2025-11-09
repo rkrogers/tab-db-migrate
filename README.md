@@ -5,12 +5,14 @@ A cross-platform tool for managing and batch-updating data source and workbook c
 ## 🖥️ Two Versions Available
 
 ### Desktop GUI Application (NEW!)
-A modern, cross-platform desktop application built with Avalonia UI featuring:
-- 🎨 **Clean, intuitive interface** - No command-line experience needed
-- 🖱️ **Point-and-click operation** - Easy connection management
+A professional, cross-platform desktop application built with Avalonia UI featuring:
+- 🎨 **Professional enterprise design** - Clean, traditional interface designed for IT administrators
+- 🖱️ **Point-and-click operation** - Easy connection management, no command-line experience needed
 - 📊 **Visual connection grouping** - See all affected assets at a glance
 - 🔄 **Real-time updates** - Watch progress as connections update
-- 💻 **Cross-platform** - Runs on Windows, macOS, and Linux
+- 💾 **Credential caching** - Optionally save credentials for faster subsequent logins
+- 💻 **Cross-platform** - Runs natively on Windows, macOS, and Linux
+- 🎯 **Enterprise aesthetic** - Professional, utilitarian design suitable for system administration tools
 
 ### Command-Line Interface (CLI)
 A powerful terminal-based tool perfect for:
@@ -189,12 +191,15 @@ After successful authentication:
 
 #### 4. Features
 
+- ✅ **Professional Enterprise Design**: Square borders, traditional styling designed for IT administrators
+- ✅ **Credential Caching**: Optionally save Tableau credentials for faster subsequent logins
 - ✅ **Visual Feedback**: Color-coded status messages (green for success, red for errors)
 - ✅ **Animated Progress**: Loading indicators during authentication and updates
 - ✅ **Smart Pre-population**: Selected connection details auto-fill the update form
 - ✅ **Batch Operations**: Update all matching connections with one click
 - ✅ **Detailed Results**: See exactly which assets succeeded or failed
 - ✅ **Asset Browser**: Expandable list of all affected data sources and workbooks
+- ✅ **Cross-Platform Native**: True native application on Windows, macOS, and Linux
 
 ### GUI Screenshots
 
