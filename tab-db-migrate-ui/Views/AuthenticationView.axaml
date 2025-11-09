@@ -105,6 +105,19 @@
                                    Foreground="#627D98"/>
                     </StackPanel>
 
+                    <!-- Remember Credentials -->
+                    <CheckBox IsChecked="{Binding RememberCredentials}"
+                              IsEnabled="{Binding !IsAuthenticating}"
+                              Margin="0,4,0,0">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock Text="💾" FontSize="14" VerticalAlignment="Center"/>
+                            <TextBlock Text="Remember my credentials" 
+                                       FontSize="13"
+                                       Foreground="#334E68"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </CheckBox>
+
                     <!-- Connect Button -->
                     <Button Command="{Binding ConnectCommand}"
                             Content="Connect to Tableau"
