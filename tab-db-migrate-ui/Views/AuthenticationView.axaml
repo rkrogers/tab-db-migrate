@@ -118,11 +118,17 @@
                             Background="#1976D2"
                             Foreground="White">
                         <Button.Styles>
-                            <Style Selector="Button:pointerover">
+                            <Style Selector="Button:pointerover /template/ ContentPresenter">
                                 <Setter Property="Background" Value="#1565C0"/>
+                                <Setter Property="TextBlock.Foreground" Value="White"/>
                             </Style>
-                            <Style Selector="Button:pressed">
+                            <Style Selector="Button:pressed /template/ ContentPresenter">
                                 <Setter Property="Background" Value="#0D47A1"/>
+                                <Setter Property="TextBlock.Foreground" Value="White"/>
+                            </Style>
+                            <Style Selector="Button:disabled /template/ ContentPresenter">
+                                <Setter Property="Background" Value="#BDBDBD"/>
+                                <Setter Property="TextBlock.Foreground" Value="White"/>
                             </Style>
                         </Button.Styles>
                     </Button>
