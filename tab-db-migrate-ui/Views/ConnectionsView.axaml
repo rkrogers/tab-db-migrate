@@ -420,21 +420,35 @@
                             <!-- Affected Assets -->
                             <Expander Header="View Affected Assets" 
                                       IsExpanded="False">
-                                <Border Background="#F5F5F5" 
-                                        CornerRadius="4" 
-                                        Padding="12"
-                                        Margin="0,10,0,0">
-                                    <ScrollViewer MaxHeight="200">
-                                        <ItemsControl ItemsSource="{Binding SelectedConnection.AffectedAssets}">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <TextBlock Text="{Binding}" 
-                                                               FontSize="11"
-                                                               Margin="0,2"/>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </ScrollViewer>
+                                <Border Background="#FFFFFF" 
+                                        CornerRadius="8" 
+                                        Padding="16"
+                                        Margin="0,10,0,0"
+                                        BorderBrush="#E9ECEF"
+                                        BorderThickness="1">
+                                    <StackPanel Spacing="8">
+                                        <TextBlock Text="Affected Assets:" 
+                                                   FontSize="12" 
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#334E68"/>
+                                        <ScrollViewer MaxHeight="200">
+                                            <ItemsControl ItemsSource="{Binding SelectedConnection.AffectedAssets}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border Background="#F8F9FA"
+                                                                CornerRadius="4"
+                                                                Padding="8,4"
+                                                                Margin="0,2">
+                                                            <TextBlock Text="{Binding}" 
+                                                                       FontSize="12"
+                                                                       Foreground="#102A43"
+                                                                       TextWrapping="Wrap"/>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
+                                    </StackPanel>
                                 </Border>
                             </Expander>
 
