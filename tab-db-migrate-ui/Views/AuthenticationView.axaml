@@ -7,37 +7,37 @@
              x:Class="TabDbMigrateUI.Views.AuthenticationView"
              x:DataType="vm:AuthenticationViewModel">
 
-    <Border Padding="40">
+    <Border Padding="20">
         <Border.Background>
             <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
                 <GradientStop Color="#f0f4f8" Offset="0"/>
                 <GradientStop Color="#d9e2ec" Offset="1"/>
             </LinearGradientBrush>
         </Border.Background>
-        <StackPanel MaxWidth="540" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="25">
+        <StackPanel MaxWidth="540" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="16">
             
             <!-- Logo/Title Section -->
-            <StackPanel Spacing="8" HorizontalAlignment="Center">
-                <TextBlock Text="📊" FontSize="48" HorizontalAlignment="Center"/>
+            <StackPanel Spacing="4" HorizontalAlignment="Center">
+                <TextBlock Text="📊" FontSize="36" HorizontalAlignment="Center"/>
                 <TextBlock Text="Tableau Connection Manager" 
-                           FontSize="28" 
+                           FontSize="24" 
                            FontWeight="Bold" 
                            HorizontalAlignment="Center"
                            Foreground="#102A43"/>
                 <TextBlock Text="Manage database connections across your Tableau site" 
-                           FontSize="14" 
+                           FontSize="13" 
                            HorizontalAlignment="Center"
                            Foreground="#627D98"
-                           Margin="0,4,0,0"/>
+                           Margin="0,2,0,0"/>
             </StackPanel>
             
             <!-- Login Form -->
             <Border Background="White" 
                     CornerRadius="12" 
-                    Padding="40" 
+                    Padding="28" 
                     BoxShadow="0 4 20 0 #20000000, 0 2 6 0 #10000000">
                 
-                <StackPanel Spacing="20">
+                <StackPanel Spacing="14">
                     
                     <TextBlock Text="Sign In" 
                                FontSize="20" 
