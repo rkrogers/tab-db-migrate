@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TabDbMigrateUI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d7ba79abde051f00e13a3afed1146b7f91642669")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6452645e096e1c068dd302e517dc454203c62997")]
 [assembly: System.Reflection.AssemblyProductAttribute("TabDbMigrateUI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TabDbMigrateUI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

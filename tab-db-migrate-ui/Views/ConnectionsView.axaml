@@ -8,37 +8,33 @@
              x:Class="TabDbMigrateUI.Views.ConnectionsView"
              x:DataType="vm:ConnectionsViewModel">
 
-    <Border>
-        <Border.Background>
-            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                <GradientStop Color="#f0f4f8" Offset="0"/>
-                <GradientStop Color="#d9e2ec" Offset="1"/>
-            </LinearGradientBrush>
-        </Border.Background>
-        
-        <Grid RowDefinitions="Auto,*" Margin="30">
+    <Border Background="#F5F5F5">
+        <Grid RowDefinitions="Auto,*" Margin="24">
             
             <!-- Header -->
             <Border Grid.Row="0" 
                     Background="White" 
-                    CornerRadius="12" 
-                    Padding="24" 
-                    Margin="0,0,0,20"
-                    BoxShadow="0 2 10 0 #15000000">
-                <StackPanel Spacing="12">
-                    <StackPanel Orientation="Horizontal" Spacing="12">
-                        <TextBlock Text="📊" FontSize="24" VerticalAlignment="Center"/>
+                    CornerRadius="0" 
+                    Padding="20" 
+                    Margin="0,0,0,16"
+                    BorderBrush="#CCCCCC"
+                    BorderThickness="1">
+                <StackPanel Spacing="8">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <TextBlock Text="📊" FontSize="22" VerticalAlignment="Center"/>
                         <TextBlock Text="Connection Management" 
-                                   FontSize="22" 
-                                   FontWeight="Bold"
-                                   Foreground="#102A43"
+                                   FontSize="20" 
+                                   FontWeight="SemiBold"
+                                   Foreground="#1F77B4"
                                    VerticalAlignment="Center"/>
                     </StackPanel>
                 
                 <!-- Status Message - Success -->
                 <Border Background="#E3F2FD"
-                        CornerRadius="4"
-                        Padding="12">
+                        CornerRadius="0"
+                        Padding="12"
+                        BorderBrush="#90CAF9"
+                        BorderThickness="1">
                     <Border.IsVisible>
                         <MultiBinding Converter="{x:Static BoolConverters.And}">
                             <Binding Path="StatusMessage" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
@@ -52,8 +48,10 @@
                 
                 <!-- Status Message - Error -->
                 <Border Background="#FFEBEE"
-                        CornerRadius="4"
-                        Padding="12">
+                        CornerRadius="0"
+                        Padding="12"
+                        BorderBrush="#FFCDD2"
+                        BorderThickness="1">
                     <Border.IsVisible>
                         <MultiBinding Converter="{x:Static BoolConverters.And}">
                             <Binding Path="StatusMessage" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
@@ -73,20 +71,21 @@
             <!-- Left Panel: Connection List -->
             <Border Grid.Column="0" 
                     Background="White" 
-                    CornerRadius="12" 
-                    Padding="24" 
+                    CornerRadius="0" 
+                    Padding="20" 
                     Margin="0,0,12,0"
-                    BoxShadow="0 2 10 0 #15000000">
+                    BorderBrush="#CCCCCC"
+                    BorderThickness="1">
                 
                 <DockPanel>
-                    <StackPanel DockPanel.Dock="Top" Spacing="4" Margin="0,0,0,16">
+                    <StackPanel DockPanel.Dock="Top" Spacing="4" Margin="0,0,0,14">
                         <TextBlock Text="Unique Connections" 
-                                   FontSize="18" 
+                                   FontSize="16" 
                                    FontWeight="SemiBold"
-                                   Foreground="#102A43"/>
+                                   Foreground="#333333"/>
                         <TextBlock Text="Select a connection to update" 
-                                   FontSize="13" 
-                                   Foreground="#627D98"/>
+                                   FontSize="12" 
+                                   Foreground="#666666"/>
                     </StackPanel>
                     
                     <!-- Loading Indicator -->
@@ -137,10 +136,10 @@
                         </ListBox.Styles>
                         <ListBox.ItemTemplate>
                             <DataTemplate x:DataType="models:UniqueConnection">
-                                <Border Padding="14" 
-                                        CornerRadius="8"
+                                <Border Padding="10" 
+                                        CornerRadius="0"
                                         Background="#F8F9FA"
-                                        BorderBrush="#E9ECEF"
+                                        BorderBrush="#999999"
                                         BorderThickness="1">
                                     <Border.Styles>
                                         <Style Selector="Border:pointerover">
@@ -182,8 +181,10 @@
                                         
                                         <!-- Counts Badge -->
                                         <Border Background="#E3F2FD" 
-                                                CornerRadius="4" 
-                                                Padding="8,4"
+                                                CornerRadius="0" 
+                                                Padding="6,2"
+                                                BorderBrush="#90CAF9"
+                                                BorderThickness="1"
                                                 HorizontalAlignment="Left">
                                             <StackPanel Orientation="Horizontal" Spacing="12">
                                                 <StackPanel Orientation="Horizontal" Spacing="4">
@@ -223,28 +224,29 @@
             <!-- Right Panel: Update Form -->
             <Border Grid.Column="1" 
                     Background="White" 
-                    CornerRadius="12" 
-                    Padding="24" 
+                    CornerRadius="0" 
+                    Padding="20" 
                     Margin="12,0,0,0"
-                    BoxShadow="0 2 10 0 #15000000">
+                    BorderBrush="#CCCCCC"
+                    BorderThickness="1">
                 
                 <ScrollViewer>
-                    <StackPanel Spacing="24" IsEnabled="{Binding !IsUpdating}">
+                    <StackPanel Spacing="20" IsEnabled="{Binding !IsUpdating}">
                         
                         <StackPanel Spacing="4">
                             <TextBlock Text="Update Connection" 
-                                       FontSize="18" 
+                                       FontSize="16" 
                                        FontWeight="SemiBold"
-                                       Foreground="#102A43"/>
+                                       Foreground="#333333"/>
                             <TextBlock Text="Modify database connection details" 
-                                       FontSize="13" 
-                                       Foreground="#627D98"/>
+                                       FontSize="12" 
+                                       Foreground="#666666"/>
                         </StackPanel>
 
                         <!-- Selection Info -->
                         <Border Background="#E3F2FD" 
-                                CornerRadius="8" 
-                                Padding="16"
+                                CornerRadius="0" 
+                                Padding="12"
                                 BorderBrush="#90CAF9"
                                 BorderThickness="1"
                                 IsVisible="{Binding SelectedConnection, Converter={x:Static ObjectConverters.IsNotNull}}">
@@ -262,8 +264,10 @@
                                            FontSize="14"
                                            Foreground="#102A43"/>
                                 <Border Background="#BBDEFB" 
-                                        CornerRadius="4" 
-                                        Padding="8,4">
+                                        CornerRadius="0" 
+                                        Padding="6,2"
+                                        BorderBrush="#90CAF9"
+                                        BorderThickness="1">
                                     <TextBlock FontSize="12" Foreground="#0D47A1" FontWeight="Medium">
                                         <Run Text="Affects"/>
                                         <Run Text="{Binding SelectedConnection.TotalAffectedAssets}"/>
@@ -275,8 +279,8 @@
 
                         <!-- No Selection Message -->
                         <Border Background="#FFF8E1" 
-                                CornerRadius="8" 
-                                Padding="16"
+                                CornerRadius="0" 
+                                Padding="12"
                                 BorderBrush="#FFD54F"
                                 BorderThickness="1"
                                 IsVisible="{Binding SelectedConnection, Converter={x:Static ObjectConverters.IsNull}}">
@@ -295,82 +299,89 @@
                                     IsVisible="{Binding SelectedConnection, Converter={x:Static ObjectConverters.IsNotNull}}">
                             
                             <!-- New Server Address -->
-                            <StackPanel Spacing="6">
-                                <TextBlock Text="New Server Address" 
-                                           FontWeight="Medium" 
-                                           FontSize="13"
-                                           Foreground="#334E68"/>
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="New Server Address:" 
+                                           FontWeight="Normal" 
+                                           FontSize="12"
+                                           Foreground="#333333"/>
                                 <TextBox Text="{Binding NewServerAddress}" 
                                          Watermark="e.g., myserver.database.windows.net"
-                                         Height="38"
-                                         CornerRadius="6"
-                                         BorderThickness="1.5"/>
+                                         Height="26"
+                                         CornerRadius="0"
+                                         BorderThickness="1"
+                                         BorderBrush="#999999"/>
                             </StackPanel>
 
                             <!-- New Server Port -->
-                            <StackPanel Spacing="6">
-                                <TextBlock Text="New Server Port" 
-                                           FontWeight="Medium" 
-                                           FontSize="13"
-                                           Foreground="#334E68"/>
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="New Server Port:" 
+                                           FontWeight="Normal" 
+                                           FontSize="12"
+                                           Foreground="#333333"/>
                                 <TextBox Text="{Binding NewServerPort}" 
                                          Watermark="e.g., 1433"
-                                         Height="38"
-                                         CornerRadius="6"
-                                         BorderThickness="1.5"/>
+                                         Height="26"
+                                         CornerRadius="0"
+                                         BorderThickness="1"
+                                         BorderBrush="#999999"/>
                             </StackPanel>
 
                             <!-- New Username -->
-                            <StackPanel Spacing="6">
-                                <TextBlock Text="New Username" 
-                                           FontWeight="Medium" 
-                                           FontSize="13"
-                                           Foreground="#334E68"/>
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="New Username:" 
+                                           FontWeight="Normal" 
+                                           FontSize="12"
+                                           Foreground="#333333"/>
                                 <TextBox Text="{Binding NewUserName}" 
                                          Watermark="Database username"
-                                         Height="38"
-                                         CornerRadius="6"
-                                         BorderThickness="1.5"/>
+                                         Height="26"
+                                         CornerRadius="0"
+                                         BorderThickness="1"
+                                         BorderBrush="#999999"/>
                             </StackPanel>
 
                             <!-- New Password -->
-                            <StackPanel Spacing="6">
-                                <TextBlock Text="New Password" 
-                                           FontWeight="Medium" 
-                                           FontSize="13"
-                                           Foreground="#334E68"/>
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="New Password:" 
+                                           FontWeight="Normal" 
+                                           FontSize="12"
+                                           Foreground="#333333"/>
                                 <TextBox Text="{Binding NewPassword}" 
                                          Watermark="Database password"
                                          PasswordChar="●"
-                                         Height="38"
-                                         CornerRadius="6"
-                                         BorderThickness="1.5"/>
+                                         Height="26"
+                                         CornerRadius="0"
+                                         BorderThickness="1"
+                                         BorderBrush="#999999"/>
                             </StackPanel>
 
                             <!-- Update Button -->
                             <Button Command="{Binding UpdateConnectionCommand}"
-                                    Content="🔄 Update All Connections"
-                                    HorizontalAlignment="Stretch"
+                                    Content="Update Connections"
+                                    HorizontalAlignment="Left"
                                     HorizontalContentAlignment="Center"
-                                    Height="44"
-                                    Margin="0,8,0,0"
-                                    FontWeight="SemiBold"
-                                    FontSize="14"
-                                    CornerRadius="6"
-                                    Background="#1976D2"
-                                    Foreground="White">
+                                    Width="150"
+                                    Height="28"
+                                    Margin="0,12,0,0"
+                                    FontWeight="Normal"
+                                    FontSize="12"
+                                    CornerRadius="0"
+                                    Background="#E0E0E0"
+                                    Foreground="#000000"
+                                    BorderBrush="#999999"
+                                    BorderThickness="1">
                                 <Button.Styles>
                                     <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                        <Setter Property="Background" Value="#1565C0"/>
-                                        <Setter Property="TextBlock.Foreground" Value="White"/>
+                                        <Setter Property="Background" Value="#D0D0D0"/>
+                                        <Setter Property="TextBlock.Foreground" Value="#000000"/>
                                     </Style>
                                     <Style Selector="Button:pressed /template/ ContentPresenter">
-                                        <Setter Property="Background" Value="#0D47A1"/>
-                                        <Setter Property="TextBlock.Foreground" Value="White"/>
+                                        <Setter Property="Background" Value="#C0C0C0"/>
+                                        <Setter Property="TextBlock.Foreground" Value="#000000"/>
                                     </Style>
                                     <Style Selector="Button:disabled /template/ ContentPresenter">
-                                        <Setter Property="Background" Value="#BDBDBD"/>
-                                        <Setter Property="TextBlock.Foreground" Value="White"/>
+                                        <Setter Property="Background" Value="#F0F0F0"/>
+                                        <Setter Property="TextBlock.Foreground" Value="#999999"/>
                                     </Style>
                                 </Button.Styles>
                             </Button>
@@ -406,8 +417,10 @@
 
                             <!-- Update Results -->
                             <Border Background="#F5F5F5" 
-                                    CornerRadius="4" 
+                                    CornerRadius="0" 
                                     Padding="12"
+                                    BorderBrush="#CCCCCC"
+                                    BorderThickness="1"
                                     IsVisible="{Binding UpdateResults, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
                                 <ScrollViewer MaxHeight="300">
                                     <TextBlock Text="{Binding UpdateResults}"
@@ -421,10 +434,10 @@
                             <Expander Header="View Affected Assets" 
                                       IsExpanded="False">
                                 <Border Background="#FFFFFF" 
-                                        CornerRadius="8" 
-                                        Padding="16"
+                                        CornerRadius="0" 
+                                        Padding="12"
                                         Margin="0,10,0,0"
-                                        BorderBrush="#E9ECEF"
+                                        BorderBrush="#CCCCCC"
                                         BorderThickness="1">
                                     <StackPanel Spacing="8">
                                         <TextBlock Text="Affected Assets:" 
@@ -436,8 +449,10 @@
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
                                                         <Border Background="#F8F9FA"
-                                                                CornerRadius="4"
-                                                                Padding="8,4"
+                                                                CornerRadius="0"
+                                                                Padding="6,2"
+                                                                BorderBrush="#CCCCCC"
+                                                                BorderThickness="1"
                                                                 Margin="0,2">
                                                             <TextBlock Text="{Binding}" 
                                                                        FontSize="12"

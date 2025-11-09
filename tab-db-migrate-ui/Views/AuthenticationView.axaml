@@ -7,13 +7,7 @@
              x:Class="TabDbMigrateUI.Views.AuthenticationView"
              x:DataType="vm:AuthenticationViewModel">
 
-    <Border Padding="20">
-        <Border.Background>
-            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
-                <GradientStop Color="#f0f4f8" Offset="0"/>
-                <GradientStop Color="#d9e2ec" Offset="1"/>
-            </LinearGradientBrush>
-        </Border.Background>
+    <Border Padding="20" Background="#F5F5F5">
         <StackPanel MaxWidth="540" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="16">
             
             <!-- Logo/Title Section -->
@@ -21,88 +15,94 @@
                 <TextBlock Text="📊" FontSize="36" HorizontalAlignment="Center"/>
                 <TextBlock Text="Tableau Connection Manager" 
                            FontSize="24" 
-                           FontWeight="Bold" 
+                           FontWeight="SemiBold" 
                            HorizontalAlignment="Center"
-                           Foreground="#102A43"/>
+                           Foreground="#1F77B4"/>
                 <TextBlock Text="Manage database connections across your Tableau site" 
                            FontSize="13" 
                            HorizontalAlignment="Center"
-                           Foreground="#627D98"
+                           Foreground="#666666"
                            Margin="0,2,0,0"/>
             </StackPanel>
             
             <!-- Login Form -->
             <Border Background="White" 
-                    CornerRadius="12" 
+                    CornerRadius="0" 
                     Padding="28" 
-                    BoxShadow="0 4 20 0 #20000000, 0 2 6 0 #10000000">
+                    BorderBrush="#CCCCCC"
+                    BorderThickness="1">
                 
-                <StackPanel Spacing="14">
+                <StackPanel Spacing="16">
                     
                     <TextBlock Text="Sign In" 
-                               FontSize="20" 
+                               FontSize="18" 
                                FontWeight="SemiBold"
-                               Foreground="#102A43"
-                               Margin="0,0,0,4"/>
+                               Foreground="#333333"
+                               Margin="0,0,0,8"/>
                     
                     <!-- Server URL -->
-                    <StackPanel Spacing="6">
-                        <TextBlock Text="Tableau Server URL" 
-                                   FontWeight="Medium" 
-                                   FontSize="13"
-                                   Foreground="#334E68"/>
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Tableau Server URL:" 
+                                   FontWeight="Normal" 
+                                   FontSize="12"
+                                   Foreground="#333333"/>
                         <TextBox Text="{Binding ServerUrl}" 
                                  Watermark="https://your-server.online.tableau.com"
                                  IsEnabled="{Binding !IsAuthenticating}"
-                                 Height="38"
-                                 CornerRadius="6"
-                                 BorderThickness="1.5"/>
+                                 Height="26"
+                                 CornerRadius="0"
+                                 BorderThickness="1"
+                                 BorderBrush="#999999"/>
                     </StackPanel>
 
                     <!-- PAT Token Name -->
-                    <StackPanel Spacing="6">
-                        <TextBlock Text="PAT Token Name" 
-                                   FontWeight="Medium" 
-                                   FontSize="13"
-                                   Foreground="#334E68"/>
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="PAT Token Name:" 
+                                   FontWeight="Normal" 
+                                   FontSize="12"
+                                   Foreground="#333333"/>
                         <TextBox Text="{Binding TokenName}" 
                                  Watermark="Your token name"
                                  IsEnabled="{Binding !IsAuthenticating}"
-                                 Height="38"
-                                 CornerRadius="6"
-                                 BorderThickness="1.5"/>
+                                 Height="26"
+                                 CornerRadius="0"
+                                 BorderThickness="1"
+                                 BorderBrush="#999999"/>
                     </StackPanel>
 
                     <!-- PAT Token Secret -->
-                    <StackPanel Spacing="6">
-                        <TextBlock Text="PAT Token Secret" 
-                                   FontWeight="Medium" 
-                                   FontSize="13"
-                                   Foreground="#334E68"/>
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="PAT Token Secret:" 
+                                   FontWeight="Normal" 
+                                   FontSize="12"
+                                   Foreground="#333333"/>
                         <TextBox Text="{Binding TokenSecret}" 
                                  Watermark="Your token secret"
                                  PasswordChar="●"
                                  IsEnabled="{Binding !IsAuthenticating}"
-                                 Height="38"
-                                 CornerRadius="6"
-                                 BorderThickness="1.5"/>
+                                 Height="26"
+                                 CornerRadius="0"
+                                 BorderThickness="1"
+                                 BorderBrush="#999999"/>
                     </StackPanel>
 
                     <!-- Site Name -->
-                    <StackPanel Spacing="6">
-                        <TextBlock Text="Site Name (Optional)" 
-                                   FontWeight="Medium" 
-                                   FontSize="13"
-                                   Foreground="#334E68"/>
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Site Name (Optional):" 
+                                   FontWeight="Normal" 
+                                   FontSize="12"
+                                   Foreground="#333333"/>
                         <TextBox Text="{Binding SiteName}" 
                                  Watermark="Leave blank for default site"
                                  IsEnabled="{Binding !IsAuthenticating}"
-                                 Height="38"
-                                 CornerRadius="6"
-                                 BorderThickness="1.5"/>
+                                 Height="26"
+                                 CornerRadius="0"
+                                 BorderThickness="1"
+                                 BorderBrush="#999999"/>
                         <TextBlock Text="Leave blank for default site" 
-                                   FontSize="12" 
-                                   Foreground="#627D98"/>
+                                   FontSize="11" 
+                                   Foreground="#666666"
+                                   FontStyle="Italic"/>
                     </StackPanel>
 
                     <!-- Remember Credentials -->
@@ -120,28 +120,31 @@
 
                     <!-- Connect Button -->
                     <Button Command="{Binding ConnectCommand}"
-                            Content="Connect to Tableau"
-                            HorizontalAlignment="Stretch"
+                            Content="Connect"
+                            HorizontalAlignment="Left"
                             HorizontalContentAlignment="Center"
-                            Height="44"
+                            Width="120"
+                            Height="28"
                             Margin="0,8,0,0"
-                            FontWeight="SemiBold"
-                            FontSize="14"
-                            CornerRadius="6"
-                            Background="#1976D2"
-                            Foreground="White">
+                            FontWeight="Normal"
+                            FontSize="12"
+                            CornerRadius="0"
+                            Background="#E0E0E0"
+                            Foreground="#000000"
+                            BorderBrush="#999999"
+                            BorderThickness="1">
                         <Button.Styles>
                             <Style Selector="Button:pointerover /template/ ContentPresenter">
-                                <Setter Property="Background" Value="#1565C0"/>
-                                <Setter Property="TextBlock.Foreground" Value="White"/>
+                                <Setter Property="Background" Value="#D0D0D0"/>
+                                <Setter Property="TextBlock.Foreground" Value="#000000"/>
                             </Style>
                             <Style Selector="Button:pressed /template/ ContentPresenter">
-                                <Setter Property="Background" Value="#0D47A1"/>
-                                <Setter Property="TextBlock.Foreground" Value="White"/>
+                                <Setter Property="Background" Value="#C0C0C0"/>
+                                <Setter Property="TextBlock.Foreground" Value="#000000"/>
                             </Style>
                             <Style Selector="Button:disabled /template/ ContentPresenter">
-                                <Setter Property="Background" Value="#BDBDBD"/>
-                                <Setter Property="TextBlock.Foreground" Value="White"/>
+                                <Setter Property="Background" Value="#F0F0F0"/>
+                                <Setter Property="TextBlock.Foreground" Value="#999999"/>
                             </Style>
                         </Button.Styles>
                     </Button>
