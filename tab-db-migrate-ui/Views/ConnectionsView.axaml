@@ -123,36 +123,95 @@
                     <!-- Connection List -->
                     <ListBox ItemsSource="{Binding Connections}"
                              SelectedItem="{Binding SelectedConnection}"
-                             IsVisible="{Binding !IsLoading}">
+                             IsVisible="{Binding !IsLoading}"
+                             Background="Transparent"
+                             BorderThickness="0">
+                        <ListBox.Styles>
+                            <Style Selector="ListBoxItem">
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Margin" Value="0,0,0,8"/>
+                            </Style>
+                            <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Style>
+                        </ListBox.Styles>
                         <ListBox.ItemTemplate>
                             <DataTemplate x:DataType="models:UniqueConnection">
-                                <Border Padding="10" 
-                                        CornerRadius="4"
-                                        Background="Transparent">
-                                    <StackPanel Spacing="5">
+                                <Border Padding="14" 
+                                        CornerRadius="8"
+                                        Background="#F8F9FA"
+                                        BorderBrush="#E9ECEF"
+                                        BorderThickness="1">
+                                    <Border.Styles>
+                                        <Style Selector="Border:pointerover">
+                                            <Setter Property="Background" Value="#E7F3FF"/>
+                                            <Setter Property="BorderBrush" Value="#90CAF9"/>
+                                        </Style>
+                                    </Border.Styles>
+                                    <StackPanel Spacing="8">
+                                        <!-- Server Address -->
                                         <TextBlock Text="{Binding ServerAddress}" 
                                                    FontWeight="SemiBold"
-                                                   FontSize="13"/>
-                                        <StackPanel Orientation="Horizontal" Spacing="5">
-                                            <TextBlock Text="Port:" FontSize="11" Foreground="#666"/>
-                                            <TextBlock Text="{Binding ServerPort}" FontSize="11" Foreground="#666"/>
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal" Spacing="5">
-                                            <TextBlock Text="User:" FontSize="11" Foreground="#666"/>
-                                            <TextBlock Text="{Binding UserName}" FontSize="11" Foreground="#666"/>
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal" Spacing="15">
-                                            <StackPanel Orientation="Horizontal" Spacing="3">
-                                                <TextBlock Text="📊" FontSize="11"/>
-                                                <TextBlock Text="{Binding DataSourceCount}" FontSize="11" FontWeight="Medium" Foreground="#1976D2"/>
-                                                <TextBlock Text="DS" FontSize="11" Foreground="#666"/>
+                                                   FontSize="14"
+                                                   Foreground="#102A43"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        
+                                        <!-- Port and User Info -->
+                                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="8" RowSpacing="4">
+                                            <TextBlock Grid.Row="0" Grid.Column="0" 
+                                                       Text="Port:" 
+                                                       FontSize="12" 
+                                                       Foreground="#627D98"
+                                                       FontWeight="Medium"/>
+                                            <TextBlock Grid.Row="0" Grid.Column="1" 
+                                                       Text="{Binding ServerPort}" 
+                                                       FontSize="12" 
+                                                       Foreground="#486581"/>
+                                            
+                                            <TextBlock Grid.Row="1" Grid.Column="0" 
+                                                       Text="User:" 
+                                                       FontSize="12" 
+                                                       Foreground="#627D98"
+                                                       FontWeight="Medium"/>
+                                            <TextBlock Grid.Row="1" Grid.Column="1" 
+                                                       Text="{Binding UserName}" 
+                                                       FontSize="12" 
+                                                       Foreground="#486581"
+                                                       TextTrimming="CharacterEllipsis"/>
+                                        </Grid>
+                                        
+                                        <!-- Counts Badge -->
+                                        <Border Background="#E3F2FD" 
+                                                CornerRadius="4" 
+                                                Padding="8,4"
+                                                HorizontalAlignment="Left">
+                                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <TextBlock Text="📊" FontSize="12" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding DataSourceCount}" 
+                                                               FontSize="12" 
+                                                               FontWeight="Bold" 
+                                                               Foreground="#1565C0"
+                                                               VerticalAlignment="Center"/>
+                                                    <TextBlock Text="DS" 
+                                                               FontSize="11" 
+                                                               Foreground="#1976D2"
+                                                               VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                                    <TextBlock Text="📈" FontSize="12" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="{Binding WorkbookCount}" 
+                                                               FontSize="12" 
+                                                               FontWeight="Bold" 
+                                                               Foreground="#1565C0"
+                                                               VerticalAlignment="Center"/>
+                                                    <TextBlock Text="WB" 
+                                                               FontSize="11" 
+                                                               Foreground="#1976D2"
+                                                               VerticalAlignment="Center"/>
+                                                </StackPanel>
                                             </StackPanel>
-                                            <StackPanel Orientation="Horizontal" Spacing="3">
-                                                <TextBlock Text="📈" FontSize="11"/>
-                                                <TextBlock Text="{Binding WorkbookCount}" FontSize="11" FontWeight="Medium" Foreground="#1976D2"/>
-                                                <TextBlock Text="WB" FontSize="11" Foreground="#666"/>
-                                            </StackPanel>
-                                        </StackPanel>
+                                        </Border>
                                     </StackPanel>
                                 </Border>
                             </DataTemplate>
