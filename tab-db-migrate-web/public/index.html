@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau Connection Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Authentication Screen -->
+        <div id="auth-screen" class="screen active">
+            <div class="auth-container">
+                <h1>Tableau Connection Manager</h1>
+                <p class="subtitle">Professional Database Connection Management Tool</p>
+                
+                <form id="auth-form" class="auth-form">
+                    <div class="form-group">
+                        <label for="server-url">Tableau Server URL:</label>
+                        <input 
+                            type="text" 
+                            id="server-url" 
+                            name="serverUrl" 
+                            placeholder="https://10ay.online.tableau.com"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="token-name">PAT Token Name:</label>
+                        <input 
+                            type="text" 
+                            id="token-name" 
+                            name="tokenName" 
+                            placeholder="my-token-name"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="token-secret">PAT Token Secret:</label>
+                        <input 
+                            type="password" 
+                            id="token-secret" 
+                            name="tokenSecret" 
+                            placeholder="••••••••••••••••"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="site-name">Site Name:</label>
+                        <input 
+                            type="text" 
+                            id="site-name" 
+                            name="siteName" 
+                            placeholder="(leave blank for default site)"
+                        >
+                        <small>Enter the site's content URL, not the full URL</small>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="connect-btn">
+                        <span class="btn-text">Connect</span>
+                        <span class="btn-loading" style="display: none;">Connecting...</span>
+                    </button>
+
+                    <div id="auth-error" class="error-message" style="display: none;"></div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Connection Management Screen -->
+        <div id="connections-screen" class="screen">
+            <div class="header">
+                <h1>Tableau Connection Manager</h1>
+                <button id="logout-btn" class="btn-secondary">Sign Out</button>
+            </div>
+
+            <div class="main-content">
+                <!-- Left Panel - Connection List -->
+                <div class="left-panel">
+                    <div class="panel-header">
+                        <h2>Unique Connections</h2>
+                        <div id="loading-connections" class="loading-indicator" style="display: none;">
+                            Loading connections...
+                        </div>
+                    </div>
+
+                    <div id="connections-list" class="connections-list">
+                        <!-- Connections will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Right Panel - Update Form -->
+                <div class="right-panel">
+                    <div class="panel-header">
+                        <h2>Update Connection</h2>
+                    </div>
+
+                    <div id="no-selection" class="no-selection">
+                        <p>Select a connection from the list to update</p>
+                    </div>
+
+                    <div id="update-form-container" class="update-form-container" style="display: none;">
+                        <div class="current-connection">
+                            <h3>Current Connection</h3>
+                            <div class="info-row">
+                                <span class="label">Server:</span>
+                                <span id="current-server" class="value"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Port:</span>
+                                <span id="current-port" class="value"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Username:</span>
+                                <span id="current-username" class="value"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Data Sources:</span>
+                                <span id="current-ds-count" class="value badge"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Workbooks:</span>
+                                <span id="current-wb-count" class="value badge"></span>
+                            </div>
+                        </div>
+
+                        <form id="update-form" class="update-form">
+                            <h3>New Connection Details</h3>
+
+                            <div class="form-group">
+                                <label for="new-server">New Server Address:</label>
+                                <input type="text" id="new-server" name="serverAddress" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="new-port">New Server Port:</label>
+                                <input type="text" id="new-port" name="serverPort" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="new-username">New Username:</label>
+                                <input type="text" id="new-username" name="userName" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="new-password">New Password:</label>
+                                <input type="password" id="new-password" name="password" required>
+                            </div>
+
+                            <button type="submit" class="btn-primary" id="update-btn">
+                                <span class="btn-text">Update All Connections</span>
+                                <span class="btn-loading" style="display: none;">Updating...</span>
+                            </button>
+                        </form>
+
+                        <div id="update-results" class="update-results" style="display: none;">
+                            <h3>Update Results</h3>
+                            <div id="results-content"></div>
+                        </div>
+
+                        <div class="affected-assets">
+                            <details>
+                                <summary>View Affected Assets (<span id="assets-count">0</span>)</summary>
+                                <div id="affected-assets-list" class="assets-list">
+                                    <!-- Assets will be populated here -->
+                                </div>
+                            </details>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
